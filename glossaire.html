@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glossaire Blue Ocean - 100 termes d'innovation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --blue-ocean: #0077b6;
+            --red-ocean: #d00000;
+            --innovation: #00b4d8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--blue-ocean) 0%, #00b4d8 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alphabet-nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .term-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .term-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--blue-ocean);
+        }
+        
+        .term-header {
+            background-color: var(--blue-ocean);
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+        }
+        
+        .term-body {
+            padding: 15px;
+            display: none;
+        }
+        
+        .term-body.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .example-badge {
+            background-color: var(--innovation);
+            color: white;
+        }
+        
+        .category-badge {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #6c757d;
+        }
+        
+        .search-box input {
+            padding-left: 35px;
+        }
+        
+        .alphabet-link {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            margin: 0 2px;
+            border-radius: 50%;
+            color: var(--blue-ocean);
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .alphabet-link:hover, .alphabet-link.active {
+            background-color: var(--blue-ocean);
+            color: white;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--blue-ocean);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">Glossaire Blue Ocean</h1>
+            <p class="lead mb-5 animate__animated animate__fadeInUp">100 termes d'innovation expliqués avec humour et exemples concrets</p>
+        </div>
+    </section>
+
+    <div class="alphabet-nav py-2">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-center">
+                <a href="#letter-A" class="alphabet-link">A</a>
+                <a href="#letter-B" class="alphabet-link">B</a>
+                <a href="#letter-C" class="alphabet-link">C</a>
+                <a href="#letter-D" class="alphabet-link">D</a>
+                <a href="#letter-E" class="alphabet-link">E</a>
+                <a href="#letter-F" class="alphabet-link">F</a>
+                <a href="#letter-G" class="alphabet-link">G</a>
+                <a href="#letter-H" class="alphabet-link">H</a>
+                <a href="#letter-I" class="alphabet-link">I</a>
+                <a href="#letter-J" class="alphabet-link">J</a>
+                <a href="#letter-K" class="alphabet-link">K</a>
+                <a href="#letter-L" class="alphabet-link">L</a>
+                <a href="#letter-M" class="alphabet-link">M</a>
+                <a href="#letter-N" class="alphabet-link">N</a>
+                <a href="#letter-O" class="alphabet-link">O</a>
+                <a href="#letter-P" class="alphabet-link">P</a>
+                <a href="#letter-Q" class="alphabet-link">Q</a>
+                <a href="#letter-R" class="alphabet-link">R</a>
+                <a href="#letter-S" class="alphabet-link">S</a>
+                <a href="#letter-T" class="alphabet-link">T</a>
+                <a href="#letter-U" class="alphabet-link">U</a>
+                <a href="#letter-V" class="alphabet-link">V</a>
+                <a href="#letter-W" class="alphabet-link">W</a>
+                <a href="#letter-X" class="alphabet-link">X</a>
+                <a href="#letter-Y" class="alphabet-link">Y</a>
+                <a href="#letter-Z" class="alphabet-link">Z</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg></span>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un terme...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                <h3 id="letter-A" class="mb-4 mt-5 pt-3 border-bottom">A</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Approche ERRC</h5>
+                        <span class="badge category-badge">Framework</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Méthode clé de la Blue Ocean Strategy qui consiste à : <strong>Éliminer, Réduire, Renforcer, Créer</strong> des éléments de valeur.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>Uber a <strong>éliminé</strong> les centrales de taxi, <strong>réduit</strong> l'incertitude tarifaire, <strong>renforcé</strong> la sécurité des paiements et <strong>créé</strong> un système de notation mutuelle.</p>
+                        <span class="badge example-badge">Cas pratique</span>
+                    </div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Avantage Concurrentiel</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Capacité d'une entreprise à surpasser ses concurrents de manière durable. La Blue Ocean Strategy cherche à rendre cet avantage inutile en créant de nouveaux marchés.</p>
+                        <p class="mb-1"><strong>Métaphore :</strong></p>
+                        <p>Plutôt que de se battre pour une part du gâteau (océan rouge), on crée un nouveau gâteau (océan bleu).</p>
+                        <span class="badge example-badge">Analogique</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-B" class="mb-4 mt-5 pt-3 border-bottom">B</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Blue Ocean</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Espace de marché inexploité où la concurrence est inexistante. Terme popularisé par W. Chan Kim et Renée Mauborgne.</p>
+                        <p class="mb-1"><strong>Exemple emblématique :</strong></p>
+                        <p>M-Pesa au Kenya : a créé un système bancaire mobile pour les non-bancarisés plutôt que de concurrencer les banques traditionnelles.</p>
+                        <span class="badge example-badge">Cas africain</span>
+                    </div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Benchmarking</h5>
+                        <span class="badge category-badge">Méthode</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Analyse comparative des pratiques d'une entreprise par rapport à ses concurrents. La Blue Ocean Strategy recommande de s'en affranchir pour innover radicalement.</p>
+                        <p class="mb-1"><strong>Contre-exemple :</strong></p>
+                        <p>Les compagnies aériennes traditionnelles qui copient les services des autres au lieu d'innover comme l'a fait Southwest Airlines avec son modèle low-cost.</p>
+                        <span class="badge example-badge">Leçon</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-C" class="mb-4 mt-5 pt-3 border-bottom">C</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Canvas Stratégique</h5>
+                        <span class="badge category-badge">Outil</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Représentation visuelle qui compare les facteurs de concurrence d'une industrie et montre comment une innovation crée une nouvelle courbe de valeur.</p>
+                        <p class="mb-1"><strong>Application :</strong></p>
+                        <p>Airbnb vs hôtels : montre comment Airbnb a réduit l'importance des éléments comme le room service tout en augmentant l'authenticité du séjour.</p>
+                        <span class="badge example-badge">Visualisation</span>
+                    </div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Cirque du Soleil</h5>
+                        <span class="badge category-badge">Cas</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Exemple classique de Blue Ocean Strategy : a réinventé l'industrie du cirque en éliminant les animaux et en créant une expérience théâtrale premium.</p>
+                        <p class="mb-1"><strong>Chiffres clés :</strong></p>
+                        <p>En 20 ans, a atteint un chiffre d'affaires que Ringling Bros a mis 100 ans à réaliser.</p>
+                        <span class="badge example-badge">Performance</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <h3 id="letter-D" class="mb-4 mt-5 pt-3 border-bottom">D</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Définition du Marché</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>La Blue Ocean Strategy encourage à redéfinir les frontières du marché plutôt que de les accepter telles quelles.</p>
+                        <p class="mb-1"><strong>Exemple africain :</strong></p>
+                        <p>Zipline (Rwanda) a redéfini la livraison médicale comme un problème de logistique aérienne plutôt que terrestre.</p>
+                        <span class="badge example-badge">Innovation</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-E" class="mb-4 mt-5 pt-3 border-bottom">E</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Écosystème d'Innovation</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Réseau d'acteurs (fournisseurs, partenaires, régulateurs) nécessaire pour soutenir une innovation de Blue Ocean.</p>
+                        <p class="mb-1"><strong>Cas M-Pesa :</strong></p>
+                        <p>A nécessité la collaboration avec Safaricom, les boutiques locales comme agents, et la banque centrale kényane.</p>
+                        <span class="badge example-badge">Collaboration</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-F" class="mb-4 mt-5 pt-3 border-bottom">F</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Facteurs de Concurrence</h5>
+                        <span class="badge category-badge">Analyse</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Éléments sur lesquels les entreprises d'un secteur rivalisent traditionnellement. La BOS identifie ceux à éliminer, réduire ou dépasser.</p>
+                        <p class="mb-1"><strong>Exemple Uber :</strong></p>
+                        <p>A ignoré les facteurs traditionnels comme les licences de taxi pour se concentrer sur l'expérience utilisateur et la technologie.</p>
+                        <span class="badge example-badge">Stratégie</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-G" class="mb-4 mt-5 pt-3 border-bottom">G</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Guerre des Prix</h5>
+                        <span class="badge category-badge">Risque</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Conséquence typique des océans rouges que la Blue Ocean Strategy permet d'éviter en créant une demande nouvelle.</p>
+                        <p class="mb-1"><strong>Contraste :</strong></p>
+                        <p>Airbnb a pu proposer des prix attractifs sans guerre des prix grâce à son modèle innovant de locations entre particuliers.</p>
+                        <span class="badge example-badge">Comparaison</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-H" class="mb-4 mt-5 pt-3 border-bottom">H</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Hypothèses de Marché</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Croyances partagées sur le fonctionnement d'une industrie. Les innovateurs Blue Ocean les remettent en question.</p>
+                        <p class="mb-1"><strong>Exemple Jumia :</strong></p>
+                        <p>A défini l'hypothèse selon laquelle le e-commerce en Afrique nécessitait des cartes bancaires en intégrant le paiement cash.</p>
+                        <span class="badge example-badge">Afrique</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-I" class="mb-4 mt-5 pt-3 border-bottom">I</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Innovation de Rupture</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Innovation qui crée un nouveau marché et rend les solutions existantes obsolètes. Au cœur de la Blue Ocean Strategy.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>Les smartphones ont créé un océan bleu en combinant téléphone, ordinateur et appareil photo, rendant de nombreux produits spécialisés moins attractifs.</p>
+                        <span class="badge example-badge">Technologie</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-J" class="mb-4 mt-5 pt-3 border-bottom">J</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Joueur Établi</h5>
+                        <span class="badge category-badge">Acteur</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Entreprise dominante dans un océan rouge. Souvent lent à réagir aux innovations Blue Ocean.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>Les hôtels ont mis des années à répondre à la menace d'Airbnb, permettant à ce dernier de s'implanter solidement.</p>
+                        <span class="badge example-badge">Dynamique</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-K" class="mb-4 mt-5 pt-3 border-bottom">K</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">KPI Non Financiers</h5>
+                        <span class="badge category-badge">Mesure</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Indicateurs clés pour évaluer une stratégie Blue Ocean au-delà des résultats financiers (expérience client, adoption, etc.).</p>
+                        <p class="mb-1"><strong>Exemple M-Pesa :</strong></p>
+                        <p>A suivi le nombre d'utilisateurs non-bancarisés touchés avant de mesurer la profitabilité.</p>
+                        <span class="badge example-badge">Suivi</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <h3 id="letter-L" class="mb-4 mt-5 pt-3 border-bottom">L</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Leapfrogging</h5>
+                        <span class="badge category-badge">Stratégie</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Phénomène où les marchés émergents sautent des étapes technologiques. Fréquent dans les Blue Oceans africains.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>L'Afrique a adopté massivement le mobile banking sans passer par les infrastructures bancaires traditionnelles.</p>
+                        <span class="badge example-badge">Saut technologique</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-M" class="mb-4 mt-5 pt-3 border-bottom">M</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">M-Pesa</h5>
+                        <span class="badge category-badge">Cas</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Service de mobile banking kényan qui a créé un océan bleu en bancarisant les populations exclues du système traditionnel.</p>
+                        <p class="mb-1"><strong>Impact :</strong></p>
+                        <p>+40M d'utilisateurs en Afrique, 25% du PNB du Kenya transitant par le système.</p>
+                        <span class="badge example-badge">Succès africain</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-N" class="mb-4 mt-5 pt-3 border-bottom">N</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Non-Clients</h5>
+                        <span class="badge category-badge">Cible</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Personnes qui n'utilisent pas les produits existants d'une industrie. Cible privilégiée des stratégies Blue Ocean.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>M-Pesa a ciblé les Kenyans non-bancarisés (75% de la population à son lancement) plutôt que de concurrencer les banques sur leurs clients existants.</p>
+                        <span class="badge example-badge">Segment</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-O" class="mb-4 mt-5 pt-3 border-bottom">O</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Océan Rouge</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Marchés existants saturés où les entreprises se battent pour des parts de marché limitées, souvent par la guerre des prix.</p>
+                        <p class="mb-1"><strong>Métaphore :</strong></p>
+                        <p>Comme des requins se battant pour la même proie, rendant l'eau rouge de sang - d'où le terme.</p>
+                        <span class="badge example-badge">Image</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-P" class="mb-4 mt-5 pt-3 border-bottom">P</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Pivot Stratégique</h5>
+                        <span class="badge category-badge">Méthode</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Changement de direction basé sur les apprentissages. Souvent nécessaire pour trouver son océan bleu.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>Twiga Foods (Kenya) a pivoté d'un modèle B2C vers B2B pour révolutionner la distribution de produits frais en Afrique.</p>
+                        <span class="badge example-badge">Adaptation</span>
+                    </div>
+                </div>
+                
+                <h3 id="letter-Q" class="mb-4 mt-5 pt-3 border-bottom">Q</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Quatre Actions (Cadre des)</h5>
+                        <span class="badge category-badge">Framework</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Composante de l'Approche ERRC. Demande : Quelles caractéristiques devrait-on Éliminer ? Réduire ? Renforcer ? Créer ?</p>
+                        <p class="mb-1"><strong>Utilité :</strong></p>
+                        <p>Permet de structurer la réflexion sur l'innovation de valeur et la création de l'océan bleu.</p>
+                        <span class="badge example-badge">Méthodologie</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-R" class="mb-4 mt-5 pt-3 border-bottom">R</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Red Ocean</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Voir "Océan Rouge". Marché caractérisé par une concurrence intense et des marges réduites.</p>
+                        <p class="mb-1"><strong>Synonyme :</strong></p>
+                        <p>Marché existant.</p>
+                        <span class="badge example-badge">Définition</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Réduction des Coûts</h5>
+                        <span class="badge category-badge">Stratégie</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Un des objectifs de l'Approche ERRC, en éliminant et réduisant des facteurs de concurrence, on diminue les coûts.</p>
+                        <p class="mb-1"><strong>Lien avec la BOS :</strong></p>
+                        <p>La réduction des coûts est couplée à une augmentation de la valeur perçue, créant une innovation de valeur.</p>
+                        <span class="badge example-badge">Double objectif</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-S" class="mb-4 mt-5 pt-3 border-bottom">S</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Stratégie Océan Bleu</h5>
+                        <span class="badge category-badge">Théorie</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Approche visant à créer de nouveaux espaces de marché inexploités plutôt que de rivaliser dans des marchés existants.</p>
+                        <p class="mb-1"><strong>Auteurs :</strong></p>
+                        <p>W. Chan Kim et Renée Mauborgne.</p>
+                        <span class="badge example-badge">Origine</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Six Voies</h5>
+                        <span class="badge category-badge">Framework</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Cadre d'analyse pour trouver de nouveaux océans bleus en explorant des frontières de marché alternatives : industries, groupes stratégiques, groupes d'acheteurs, produits/services complémentaires, attrait fonctionnel/émotionnel, temps.</p>
+                        <p class="mb-1"><strong>Exemple :</strong></p>
+                        <p>Le Cirque du Soleil a exploré les substituts (théâtre) et les non-clients pour redéfinir son offre.</p>
+                        <span class="badge example-badge">Exploration</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-T" class="mb-4 mt-5 pt-3 border-bottom">T</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Théorie des Valeurs</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Comprendre ce que les clients valorisent réellement pour créer une offre irrésistible.</p>
+                        <p class="mb-1"><strong>Important :</strong></p>
+                        <p>Souvent, ce que les clients "valent" est différent de ce que les concurrents offrent.</p>
+                        <span class="badge example-badge">Perception</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Toxicité Concurrentielle</h5>
+                        <span class="badge category-badge">Risque</span>
+                    </div>
+                    <div class="term-body">
+                        <p>L'environnement hostile des océans rouges, où la concurrence excessive nuit à la rentabilité et à l'innovation.</p>
+                        <p class="mb-1"><strong>Éviter :</strong></p>
+                        <p>La Blue Ocean Strategy vise à échapper à cette toxicité.</p>
+                        <span class="badge example-badge">Conséquence</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-U" class="mb-4 mt-5 pt-3 border-bottom">U</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Uber</h5>
+                        <span class="badge category-badge">Cas</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Exemple de Blue Ocean ayant créé un nouveau marché du transport à la demande via une application mobile.</p>
+                        <p class="mb-1"><strong>Innovation :</strong></p>
+                        <p>Accès facile, paiement intégré, notation des conducteurs et passagers.</p>
+                        <span class="badge example-badge">Disruption</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Unité d'Analyse</h5>
+                        <span class="badge category-badge">Méthode</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Définir le niveau d'analyse pour une stratégie Blue Ocean (produit, service, business model entier).</p>
+                        <p class="mb-1"><strong>Important :</strong></p>
+                        <p>Une bonne unité d'analyse permet une innovation plus ciblée.</p>
+                        <span class="badge example-badge">Précision</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-V" class="mb-4 mt-5 pt-3 border-bottom">V</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Valeur d'Usage</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>La valeur perçue par le client de l'utilisation d'un produit ou service. La BOS cherche à maximiser cette valeur.</p>
+                        <p class="mb-1"><strong>Différence :</strong></p>
+                        <p>Distincte de la valeur d'échange (prix).</p>
+                        <span class="badge example-badge">Client</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Vision Stratégique</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>La capacité à anticiper l'avenir et à imaginer un marché différent, non contraint par les frontières actuelles.</p>
+                        <p class="mb-1"><strong>Clé de la BOS :</strong></p>
+                        <p>Nécessite de penser au-delà des concurrents existants.</p>
+                        <span class="badge example-badge">Anticipation</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-W" class="mb-4 mt-5 pt-3 border-bottom">W</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">W. Chan Kim</h5>
+                        <span class="badge category-badge">Auteur</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Co-auteur du livre "Blue Ocean Strategy" et théoricien de l'innovation stratégique.</p>
+                        <p class="mb-1"><strong>Collaboration :</strong></p>
+                        <p>Avec Renée Mauborgne.</p>
+                        <span class="badge example-badge">Fondateur</span>
+                    </div>
+                </div>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Win-Win</h5>
+                        <span class="badge category-category">Résultat</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Situation où l'innovation profite à la fois à l'entreprise et aux clients (et parfois aux partenaires), caractéristique des océans bleus.</p>
+                        <p class="mb-1"><strong>Contraire :</strong></p>
+                        <p>Le lose-lose ou win-lose des océans rouges.</p>
+                        <span class="badge example-badge">Bénéfices mutuels</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-X" class="mb-4 mt-5 pt-3 border-bottom">X</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">X-Factor</h5>
+                        <span class="badge category-badge">Concept</span>
+                    </div>
+                    <div class="term-body">
+                        <p>L'élément unique ou la caractéristique qui rend une offre Blue Ocean irrésistible et difficilement copiable.</p>
+                        <p class="mb-1"><strong>Exemple Cirque du Soleil :</strong></p>
+                        <p>La combinaison de l'art théâtral et de la performance acrobatique sans animaux.</p>
+                        <span class="badge example-badge">Différenciation</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-Y" class="mb-4 mt-5 pt-3 border-bottom">Y</h3>
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Yield Management</h5>
+                        <span class="badge category-badge">Méthode</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Stratégie de tarification dynamique. Peut être utilisée dans un océan bleu pour optimiser les revenus, mais n'est pas le cœur de la stratégie.</p>
+                        <p class="mb-1"><strong>Application :</strong></p>
+                        <p>Airbnb utilise le yield management pour les propriétaires.</p>
+                        <span class="badge example-badge">Optimisation</span>
+                    </div>
+                </div>
+
+                <h3 id="letter-Z" class="mb-4 mt-5 pt-3 border-bottom">Z</h3>
+                
+                <div class="term-card">
+                    <div class="term-header" onclick="toggleTerm(this)">
+                        <h5 class="mb-0">Zipline</h5>
+                        <span class="badge category-badge">Cas</span>
+                    </div>
+                    <div class="term-body">
+                        <p>Startup qui a créé un océan bleu au Rwanda avec la livraison de sang et médicaments par drone dans les zones rurales.</p>
+                        <p class="mb-1"><strong>Innovation :</strong></p>
+                        <p>A résolu le problème des routes impraticables en les évitant complètement par les airs.</p>
+                        <span class="badge example-badge">Santé</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle term details
+        function toggleTerm(header) {
+            const body = header.nextElementSibling;
+            body.classList.toggle('show');
+            
+            // Close other open terms in the same column
+            const column = header.closest('.col-md-4');
+            column.querySelectorAll('.term-body').forEach(item => {
+                if (item !== body && item.classList.contains('show')) {
+                    item.classList.remove('show');
+                }
+            });
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.term-card').forEach(card => {
+                const termTitle = card.querySelector('h5').textContent.toLowerCase();
+                const termBody = card.querySelector('.term-body').textContent.toLowerCase(); // Also search in body
+                
+                if (termTitle.includes(searchTerm) || termBody.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Highlight current letter in alphabet nav when scrolling
+        window.addEventListener('scroll', function() {
+            const letters = document.querySelectorAll('[id^="letter-"]');
+            const alphabetLinks = document.querySelectorAll('.alphabet-link');
+            
+            let currentLetter = '';
+            
+            // Determine the active letter based on scroll position
+            letters.forEach(letter => {
+                const rect = letter.getBoundingClientRect();
+                // Adjust this value if needed for better sensitivity
+                if (rect.top <= 150 && rect.bottom >= 150) { 
+                    currentLetter = letter.id;
+                }
+            });
+            
+            // If no specific letter section is in view, default to the first one on top
+            if (!currentLetter && window.scrollY < 100) { 
+                currentLetter = 'letter-A'; 
+            }
+
+
+            alphabetLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentLetter}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Set active letter on initial load if scrolled
+        document.addEventListener('DOMContentLoaded', function() {
+            window.dispatchEvent(new Event('scroll'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprentissage Interactif de la Stratégie Océan Bleu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* Variables CSS pour les couleurs thématiques */
+        :root {
+            --blue-ocean: #1a73e8;
+            --red-ocean: #ea4335;
+            --innovation: #34a853;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Styles généraux du corps */
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden; /* Empêche le défilement horizontal */
+        }
+
+        /* Section Héro (en-tête) */
+        .hero-section {
+            background: linear-gradient(135deg, var(--blue-ocean) 0%, var(--innovation) 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        /* Vague de l'océan (SVG intégré) */
+        .ocean-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px; /* Ajustez la hauteur si nécessaire */
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="white"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="white"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="white"/>') no-repeat center bottom;
+            background-size: cover;
+            z-index: 1; /* S'assure que la vague est au-dessus du contenu du héros si nécessaire */
+        }
+
+        /* Styles de navigation (pilules) */
+        .nav-pills .nav-link {
+            color: var(--blue-ocean);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--blue-ocean);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+            color: var(--blue-ocean);
+            transform: translateY(-2px);
+        }
+
+        /* Cartes d'étape */
+        .step-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--blue-ocean);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            background-color: var(--card-bg);
+            padding: 15px;
+            display: flex; /* Utilisation de flexbox pour l'alignement */
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .step-card .card-title {
+            color: var(--blue-ocean);
+            font-weight: bold;
+        }
+
+        .step-card .rounded-circle {
+            background-color: rgba(26, 115, 232, 0.15) !important;
+            color: var(--blue-ocean) !important;
+            font-weight: bold;
+        }
+
+        /* Cartes d'étude de cas */
+        .case-study-card {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            background-color: var(--card-bg);
+            display: flex; /* Utilisation de flexbox pour la hauteur égale */
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .case-study-card:hover {
+            transform: scale(1.02); /* Légèrement moins agressif que 1.03 */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .case-study-card img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%; /* Assure que l'image remplit la largeur */
+        }
+
+        .case-study-card .card-body {
+            flex-grow: 1; /* Permet au corps de la carte de prendre l'espace restant */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Bordures spécifiques aux études de cas */
+        .uber-card { border-top: 4px solid #000; }
+        .airbnb-card { border-top: 4px solid #FF5A5F; }
+        .mpesa-card { border-top: 4px solid #00B140; }
+        .africa-card { border-top: 4px solid #FFD700; } /* Couleur pour les cas africains */
+
+        /* Cartes d'outils (Frameworks) */
+        .tool-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Conteneur de simulation */
+        .simulation-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Barre de progression */
+        .progress-bar {
+            background-color: var(--blue-ocean);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out; /* Animation de la barre de progression */
+        }
+
+        /* Boutons thématiques */
+        .btn-blue-ocean {
+            background-color: var(--blue-ocean);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 25px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none; /* Supprime la bordure par défaut */
+        }
+
+        .btn-blue-ocean:hover {
+            background-color: #0d5bba; /* Teinte plus foncée */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.4);
+        }
+
+        .btn-innovation {
+            background-color: var(--innovation);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 25px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+
+        .btn-innovation:hover {
+            background-color: #2d8c47; /* Teinte plus foncée */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 168, 83, 0.4);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--blue-ocean);
+            color: var(--blue-ocean);
+            border-radius: 8px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--blue-ocean);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+        }
+
+        /* Animations */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(26, 115, 232, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(26, 115, 232, 0); }
+        }
+
+        /* Icônes des cadres */
+        .framework-icon {
+            font-size: 3.5rem; /* Légèrement plus grand */
+            color: var(--blue-ocean);
+            margin-bottom: 1.5rem;
+            display: block;
+            text-align: center;
+        }
+
+        /* Titres de section */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2.5rem;
+            color: var(--blue-ocean);
+            font-weight: bold;
+            font-size: 2.2rem; /* Taille de police plus grande */
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 70%; /* Plus large */
+            height: 6px; /* Plus épais */
+            background: var(--innovation);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        /* Améliorations de tableau */
+        .table-bordered th, .table-bordered td {
+            border-color: var(--border-color);
+        }
+        .table-light th {
+            background-color: rgba(26, 115, 232, 0.05);
+            color: var(--blue-ocean);
+            font-weight: bold;
+        }
+
+        /* Style pour les inputs dans les tableaux */
+        .table-responsive .form-control-sm {
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .table-responsive .form-control-sm:focus {
+            border-color: var(--blue-ocean);
+            box-shadow: 0 0 0 0.25rem rgba(26, 115, 232, 0.25);
+        }
+
+        /* Modals personnalisés */
+        .custom-modal-header {
+            background-color: var(--blue-ocean);
+            color: white;
+            border-top-left-radius: 0.3rem;
+            border-top-right-radius: 0.3rem;
+            padding: 1.2rem;
+            font-weight: bold;
+        }
+        .custom-modal-footer .btn {
+            border-radius: 8px;
+        }
+        .btn-close-white {
+            filter: invert(1); /* Rend l'icône de fermeture blanche */
+        }
+
+        /* Style pour le graphique de la toile stratégique dans la simulation */
+        #simulationStrategyCanvas, #finalStrategyCanvas, #marketFactorChart {
+            max-height: 450px; /* Limiter la hauteur pour une meilleure visualisation */
+            margin-top: 20px;
+            background-color: #fcfcfc;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+        }
+
+        /* Styles spécifiques pour le Value Proposition Canvas */
+        .value-prop-section {
+            border: 1px dashed var(--blue-ocean);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(26, 115, 232, 0.03);
+        }
+        .value-prop-section h6 {
+            color: var(--blue-ocean);
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(26, 115, 232, 0.1);
+            padding-bottom: 8px;
+        }
+        .value-prop-section textarea {
+            min-height: 80px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .value-prop-section textarea:focus {
+            border-color: var(--blue-ocean);
+            box-shadow: 0 0 0 0.25rem rgba(26, 115, 232, 0.25);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529; /* Couleur sombre pour le pied de page */
+            color: #f8f9fa; /* Texte clair */
+            padding: 2rem 0;
+            margin-top: 5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 3rem 0;
+            }
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            .hero-section p.lead {
+                font-size: 1rem;
+            }
+            .nav-pills {
+                flex-wrap: wrap;
+            }
+            .nav-pills .nav-item {
+                flex-basis: 50%; /* Deux boutons par ligne sur mobile */
+                margin-bottom: 0.5rem;
+            }
+            .nav-pills .nav-link {
+                width: 100%; /* Remplir la largeur disponible */
+                text-align: center;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .section-title:after {
+                width: 50%;
+            }
+            .framework-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section .d-sm-flex {
+                flex-direction: column;
+                align-items: center;
+            }
+            .hero-section .btn {
+                width: 80%;
+                margin-bottom: 1rem;
+            }
+            .nav-pills .nav-item {
+                flex-basis: 100%; /* Un bouton par ligne sur très petit mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">Stratégie Océan Bleu : L'Innovation sans Concurrence</h1>
+                    <p class="lead mb-5 animate__animated animate__fadeInUp animate__delay-1s">Découvrez comment créer un espace de marché incontesté, rendre la concurrence non pertinente et débloquer une nouvelle demande. Plongez dans nos outils interactifs, études de cas africaines et simulations pratiques.</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center animate__animated animate__fadeInUp animate__delay-2s">
+                        <button type="button" class="btn btn-blue-ocean btn-lg px-5 py-3 pulse" onclick="document.getElementById('pills-steps-tab').click();">Commencer l'apprentissage</button>
+                        <button type="button" class="btn btn-outline-light btn-lg px-5 py-3" onclick="document.getElementById('pills-cases-tab').click();">Explorer les Études de cas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ocean-wave" aria-hidden="true"></div>
+    </section>
+
+    <div class="container my-5">
+        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-steps-tab" data-bs-toggle="pill" data-bs-target="#pills-steps" type="button" role="tab" aria-controls="pills-steps" aria-selected="true">Processus en 10 étapes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-frameworks-tab" data-bs-toggle="pill" data-bs-target="#pills-frameworks" type="button" role="tab" aria-controls="pills-frameworks" aria-selected="false">Cadres Clés</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-cases-tab" data-bs-toggle="pill" data-bs-target="#pills-cases" type="button" role="tab" aria-controls="pills-cases" aria-selected="false">Études de cas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-simulation-tab" data-bs-toggle="pill" data-bs-target="#pills-simulation" type="button" role="tab" aria-controls="pills-simulation" aria-selected="false">Simulation Interactive</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-africa-tab" data-bs-toggle="pill" data-bs-target="#pills-africa" type="button" role="tab" aria-controls="pills-africa" aria-selected="false">Focus Afrique</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-steps" role="tabpanel" aria-labelledby="pills-steps-tab">
+            <div class="container my-5">
+                <h2 class="text-center section-title mb-5">Le Processus de la Stratégie Océan Bleu en 10 Étapes</h2>
+                <p class="text-center lead mb-5">La Stratégie Océan Bleu n'est pas un coup de chance, mais un processus systématique et reproductible. Ces 10 étapes vous guident de l'analyse de votre marché actuel à la formulation et l'exécution d'une stratégie innovante.</p>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">1</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Cartographier la Réalité Actuelle</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Comprenez en profondeur le paysage concurrentiel de votre industrie, identifiez les acteurs clés, leurs offres et les points de douleur récurrents pour les clients dans l'Océan Rouge existant. Utilisez la Toile Stratégique pour visualiser les facteurs de concurrence actuels.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Toile Stratégique, Analyse des 5 Forces de Porter</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Définir clairement les frontières de l'océan rouge et ses caractéristiques dominantes.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">2</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Explorer les Alternatives</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Regardez au-delà des frontières traditionnelles de votre industrie. Quels produits ou services alternatifs les clients utilisent-ils pour résoudre le même problème ou satisfaire le même besoin ? Le Cadre des Six Voies vous aide à élargir votre perspective.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Cadre des Six Voies (Industries alternatives, Groupes stratégiques, Chaîne d'acheteurs, Offres complémentaires, Attrait fonctionnel/émotionnel, Tendances)</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Identifier les opportunités d'innovation en dehors de votre champ de vision habituel.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">3</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Identifier les Non-Clients</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Qui sont les personnes qui ne sont pas vos clients actuels ? Pourquoi ne le sont-elles pas ? Le concept des Trois Niveaux de Non-clients vous permet de découvrir la demande latente et les segments de marché inexploités.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Trois Niveaux de Non-clients (Non-clients de "premier niveau", "deuxième niveau", "troisième niveau")</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Comprendre les raisons de la non-consommation et les barrières à l'entrée.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">4</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Visualiser les Options Stratégiques</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Sur la base des étapes précédentes, commencez à générer des idées pour de nouvelles courbes de valeur. Le Cadre des Quatre Actions est essentiel ici pour structurer votre pensée et identifier les leviers d'innovation.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Cadre des Quatre Actions (Éliminer, Réduire, Rehausser, Créer)</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Brainstormer des stratégies potentielles qui rompent avec les compromis existants.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">5</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Appliquer la Grille ERRC</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">La Matrice ERRC est le cœur de la formulation de l'Océan Bleu. Elle vous pousse à Éliminer les facteurs inutiles, Réduire ceux qui sont sur-conçus, Rehausser ceux qui apportent une vraie valeur, et Créer de nouveaux facteurs de valeur.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Matrice ERRC (Éliminer, Réduire, Rehausser, Créer)</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Reconstruire systématiquement la valeur pour l'acheteur et réduire les coûts simultanément.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">6</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Formuler l'Idée d'Océan Bleu</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Synthétisez vos découvertes et les actions ERRC en une proposition de valeur claire et convaincante. Cette idée doit offrir une valeur exceptionnelle aux non-clients tout en ayant une structure de coûts viable.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Proposition de Valeur (Value Proposition Canvas), Courbe de Valeur</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Articuler une stratégie qui ouvre un nouvel espace de marché.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">7</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Tester la Faisabilité</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Avant un déploiement à grande échelle, validez votre idée par des prototypes, des tests pilotes et des expériences de marché. Cela permet d'ajuster la stratégie et de minimiser les risques. Le Buyer Utility Map peut aider à affiner l'utilité perçue.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Prototypage Rapide, Buyer Utility Map, Expérimentation Lean Startup</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: S'assurer que la stratégie est désirable, faisable et viable.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">8</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Surmonter les Obstacles à l'Adoption</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Anticipez et abordez les résistances potentielles au changement. Cela inclut les obstacles cognitifs, les ressources limitées, la motivation des employés et la politique organisationnelle. Le concept de Leadership au point de bascule est crucial ici.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Carte des Obstacles, Leadership au Point de Bascule</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Faciliter l'implémentation et l'acceptation de la nouvelle stratégie.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">9</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Exécuter le Lancement</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Mettez en œuvre votre stratégie Océan Bleu avec un plan de déploiement ciblé et une communication claire. Assurez-vous que toutes les parties prenantes comprennent la nouvelle direction et leur rôle dans sa réussite.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Gestion de Projet, Communication Stratégique</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Lancer la nouvelle offre de manière efficace et coordonnée.</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card step-card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold">10</span>
+                                    </div>
+                                    <h5 class="card-title ms-3 mb-0">Soutenir et Évoluer</h5>
+                                </div>
+                                <p class="card-text flex-grow-1">Un Océan Bleu n'est pas statique. Surveillez les performances, adaptez-vous aux changements du marché et aux nouvelles technologies, et continuez à innover pour maintenir votre avantage concurrentiel et éviter qu'il ne devienne un Océan Rouge.</p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2"><i class="bi bi-tools"></i> Outil</span>
+                                    <span class="small">Métriques Océan Bleu, Veille Stratégique, Innovation Continue</span>
+                                </div>
+                                <p class="card-text mt-2 small text-muted"><em>Objectif: Assurer la durabilité de l'avantage concurrentiel et explorer de nouveaux océans bleus.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-frameworks" role="tabpanel" aria-labelledby="pills-frameworks-tab">
+            <div class="container my-5">
+                <h2 class="text-center section-title mb-5">Cadres Clés de la Stratégie Océan Bleu</h2>
+                <p class="text-center lead mb-5">Ces outils fondamentaux vous aideront à analyser le marché, à identifier les opportunités et à construire votre stratégie Océan Bleu de manière structurée.</p>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-bar-chart-line framework-icon"></i>
+                                <h4>Toile Stratégique</h4>
+                            </div>
+                            <p>La Toile Stratégique est un outil de diagnostic visuel puissant qui capture l'état actuel du jeu dans l'espace de marché connu. Elle permet de comparer visuellement votre offre à celle de vos concurrents sur des facteurs clés de concurrence, et d'identifier les opportunités de différenciation.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#strategyCanvasModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('pills-simulation-tab').click();">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-grid-3x3 framework-icon"></i>
+                                <h4>Cadre des Quatre Actions</h4>
+                            </div>
+                            <p>Ce cadre pose quatre questions clés (Éliminer, Réduire, Rehausser, Créer) pour remettre en question la logique stratégique et le modèle économique d'une industrie. Il est l'épine dorsale de la création d'une nouvelle courbe de valeur.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#fourActionsModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('pills-simulation-tab').click();">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-table framework-icon"></i>
+                                <h4>Matrice ERRC</h4>
+                            </div>
+                            <p>Directement dérivée du Cadre des Quatre Actions, la Matrice ERRC est un outil pratique pour explorer systématiquement comment reconstruire la valeur pour l'acheteur en agissant sur les facteurs de concurrence. Elle favorise l'innovation de valeur.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#errcMatrixModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('pills-simulation-tab').click();">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-people framework-icon"></i>
+                                <h4>Trois Niveaux de Non-clients</h4>
+                            </div>
+                            <p>Cet outil aide à identifier la demande cachée en analysant pourquoi les non-clients (ceux qui n'achètent pas vos produits ou services) restent à l'écart de votre marché. Ils représentent un vaste potentiel de croissance inexploité.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#nonCustomersModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-person-check framework-icon"></i>
+                                <h4>Carte d'Utilité de l'Acheteur</h4>
+                            </div>
+                            <p>Elle identifie la gamme complète de leviers d'utilité qui peuvent débloquer une valeur exceptionnelle pour les acheteurs. Elle examine l'expérience client à travers six étapes du cycle d'expérience acheteur et six leviers d'utilité.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#buyerUtilityModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="tool-card h-100">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-currency-dollar framework-icon"></i>
+                                <h4>Corridor de Prix</h4>
+                            </div>
+                            <p>Ce cadre aide à fixer le juste prix stratégique pour attirer la masse des acheteurs cibles et s'assurer que la nouvelle offre est accessible et attrayante. Il ne s'agit pas de sous-cotation, mais de maximisation de la valeur perçue.</p>
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-sm btn-blue-ocean me-2" data-bs-toggle="modal" data-bs-target="#priceCorridorModal">En savoir plus</button>
+                                <button class="btn btn-sm btn-outline-primary">Essayer l'outil</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="card border-0 shadow-sm p-4">
+                            <div class="card-body">
+                                <h4 class="card-title text-center mb-4 text-blue-ocean">Toile Stratégique Interactive : Comparez et Visualisez</h4>
+                                <p class="text-center text-muted mb-4">Sélectionnez une entreprise ci-dessous pour visualiser sa toile stratégique par rapport à son industrie traditionnelle. Observez comment les innovateurs de l'Océan Bleu ont redéfini la valeur.</p>
+                                <canvas id="strategyCanvas" height="300" aria-label="Graphique de la toile stratégique interactive"></canvas>
+                                <div class="mt-4 text-center">
+                                    <button class="btn btn-blue-ocean me-2" id="compareUber">Comparer Uber</button>
+                                    <button class="btn btn-outline-primary me-2" id="compareAirbnb">Comparer Airbnb</button>
+                                    <button class="btn btn-innovation me-2" id="compareMpesa">Comparer M-Pesa</button>
+                                    <button class="btn btn-outline-secondary" id="resetCanvas">Réinitialiser</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-cases" role="tabpanel" aria-labelledby="pills-cases-tab">
+            <div class="container my-5">
+                <h2 class="text-center section-title mb-5">Études de Cas Inspirantes sur la Stratégie Océan Bleu</h2>
+                <p class="text-center lead mb-5">Découvrez comment des entreprises du monde entier ont appliqué les principes de l'Océan Bleu pour créer de nouveaux marchés et échapper à la concurrence féroce.</p>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card uber-card h-100">
+                            <img src="https://placehold.co/500x300/000000/FFFFFF?text=Uber" class="card-img-top" alt="Image d'Uber">
+                            <div class="card-body">
+                                <h5 class="card-title">Uber : Réinventer le Transport Urbain</h5>
+                                <p class="card-text">Uber a créé un nouveau marché pour les services de covoiturage en éliminant les contraintes des taxis traditionnels (médaillons coûteux, attente incertaine) et en offrant une commodité sans précédent via une application mobile.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Transport</small>
+                                    <button class="btn btn-sm btn-blue-ocean" data-bs-toggle="modal" data-bs-target="#uberCaseModal">Voir l'analyse détaillée</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card airbnb-card h-100">
+                            <img src="https://placehold.co/500x300/FF5A5F/FFFFFF?text=Airbnb" class="card-img-top" alt="Image d'Airbnb">
+                            <div class="card-body">
+                                <h5 class="card-title">Airbnb : L'Hôtellerie Réinventée</h5>
+                                <p class="card-text">Airbnb a bouleversé l'industrie hôtelière en créant une plateforme de partage de logements, offrant des expériences uniques et un sentiment d'appartenance à un prix souvent plus abordable, tout en éliminant les frais généraux des hôtels.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Hôtellerie</small>
+                                    <button class="btn btn-sm btn-blue-ocean" data-bs-toggle="modal" data-bs-target="#airbnbCaseModal">Voir l'analyse détaillée</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card mpesa-card h-100">
+                            <img src="https://placehold.co/500x300/00B140/FFFFFF?text=M-Pesa" class="card-img-top" alt="Image de M-Pesa">
+                            <div class="card-body">
+                                <h5 class="card-title">M-Pesa : La Révolution Bancaire Mobile</h5>
+                                <p class="card-text">M-Pesa a révolutionné les services financiers au Kenya (et au-delà) en offrant des transferts d'argent mobile via SMS, ciblant la vaste population non bancarisée avec une solution simple, accessible et peu coûteuse.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Services Financiers</small>
+                                    <button class="btn btn-sm btn-blue-ocean" data-bs-toggle="modal" data-bs-target="#mpesaCaseModal">Voir l'analyse détaillée</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100">
+                            <img src="https://placehold.co/500x300/5A2D82/FFFFFF?text=Cirque+du+Soleil" class="card-img-top" alt="Image du Cirque du Soleil">
+                            <div class="card-body">
+                                <h5 class="card-title">Cirque du Soleil : Réinventer le Cirque</h5>
+                                <p class="card-text">Le Cirque du Soleil a créé un nouveau genre de divertissement en éliminant les animaux et les numéros de stars coûteux, pour se concentrer sur le théâtre, l'acrobatie artistique, la musique originale et la narration, attirant un public adulte et corporatif.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Divertissement</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#cirqueDuSoleilCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100">
+                            <img src="https://placehold.co/500x300/E50914/FFFFFF?text=Netflix" class="card-img-top" alt="Image de Netflix">
+                            <div class="card-body">
+                                <h5 class="card-title">Netflix : De la Location de DVD au Streaming Mondial</h5>
+                                <p class="card-text">Netflix a transformé la location de vidéos en éliminant les frais de retard et les contraintes physiques des magasins, puis en créant un service de streaming par abonnement avec un vaste catalogue, rendant la concurrence des vidéoclubs obsolète.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Divertissement</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#netflixCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100">
+                            <img src="https://placehold.co/500x300/CC0000/FFFFFF?text=Tesla" class="card-img-top" alt="Image de Tesla">
+                            <div class="card-body">
+                                <h5 class="card-title">Tesla : Le Luxe Électrique et l'Innovation Automobile</h5>
+                                <p class="card-text">Tesla a créé un nouveau segment de véhicules électriques de luxe en éliminant les concessionnaires traditionnels, en se concentrant sur la technologie de pointe, la performance et l'expérience client directe, tout en réduisant l'empreinte carbone.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Automobile</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#teslaCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-simulation" role="tabpanel" aria-labelledby="pills-simulation-tab">
+            <div class="container my-5">
+                <h2 class="text-center section-title mb-5">Simulation de la Stratégie Océan Bleu</h2>
+                <div class="row">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="simulation-container">
+                            <h4 class="text-center mb-4">Créez votre propre Stratégie Océan Bleu</h4>
+                            <p class="text-center mb-4 text-muted">Suivez les étapes ci-dessous pour développer une Stratégie Océan Bleu pour l'industrie de votre choix. Chaque étape vous rapproche de votre Océan Bleu unique.</p>
+
+                            <div class="progress mb-4" style="height: 25px; border-radius: 12px; background-color: #e9ecef;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="simulationProgressBar">0%</div>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 1: Sélectionnez votre industrie</h5>
+                                <p class="small text-muted"><em>Choisissez l'industrie dans laquelle vous souhaitez appliquer la Stratégie Océan Bleu.</em></p>
+                                <select class="form-select mb-3" id="industrySelect" aria-label="Sélection de l'industrie">
+                                    <option value="">Choisissez une industrie...</option>
+                                    <option value="transportation">Transport (Ex: Taxis, VTC)</option>
+                                    <option value="hospitality">Hôtellerie (Ex: Hôtels, Gîtes)</option>
+                                    <option value="banking">Services bancaires/financiers (Ex: Banques traditionnelles)</option>
+                                    <option value="education">Éducation (Ex: Universités, Écoles traditionnelles)</option>
+                                    <option value="healthcare">Santé (Ex: Hôpitaux, Cliniques)</option>
+                                    <option value="retail">Commerce de détail (Ex: Supermarchés physiques)</option>
+                                    <option value="media">Médias/Divertissement (Ex: Télévision linéaire, Cinéma)</option>
+                                    <option value="agriculture">Agriculture (Ex: Fermes traditionnelles)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 2: Analysez les facteurs actuels du marché</h5>
+                                <p class="small text-muted"><em>Identifiez les facteurs clés sur lesquels l'industrie actuelle rivalise et évaluez leur niveau standard. Ensuite, proposez votre innovation.</em></p>
+                                <div class="table-responsive mb-4">
+                                    <table class="table table-bordered align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Facteur</th>
+                                                <th>Standard actuel de l'industrie</th>
+                                                <th>Votre Innovation (Niveau 1-10)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="marketFactorsTableBody">
+                                            </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center">
+                                    <canvas id="marketFactorChart" height="250" aria-label="Graphique des facteurs de marché"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 3: Appliquez la grille ERRC</h5>
+                                <p class="small text-muted"><em>Réfléchissez aux facteurs à Éliminer, Réduire, Rehausser et Créer pour votre nouvelle offre.</em></p>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Question Clé</th>
+                                                <th>Votre Décision / Idée</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-danger">Éliminer</td>
+                                                <td>Quels facteurs devraient être éliminés que l'industrie tient pour acquis ?</td>
+                                                <td><input type="text" class="form-control form-control-sm" id="errcEliminate" placeholder="Ex: Frais cachés, intermédiaires..." aria-label="Facteurs à éliminer"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-warning">Réduire</td>
+                                                <td>Quels facteurs devraient être réduits bien en dessous du standard de l'industrie ?</td>
+                                                <td><input type="text" class="form-control form-control-sm" id="errcReduce" placeholder="Ex: Complexité, temps d'attente..." aria-label="Facteurs à réduire"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-success">Rehausser</td>
+                                                <td>Quels facteurs devraient être rehaussés bien au-dessus du standard de l'industrie ?</td>
+                                                <td><input type="text" class="form-control form-control-sm" id="errcRaise" placeholder="Ex: Commodité, personnalisation..." aria-label="Facteurs à rehausser"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-info">Créer</td>
+                                                <td>Quels facteurs devraient être créés que l'industrie n'a jamais offerts ?</td>
+                                                <td><input type="text" class="form-control form-control-sm" id="errcCreate" placeholder="Ex: Nouveaux services, modèles économiques..." aria-label="Facteurs à créer"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 4 : Identification des Non-Clients</h5>
+                                <p class="small text-muted"><em>Qui sont les non-clients que vous pourriez attirer ? (Ceux qui n'utilisent pas l'industrie, ceux qui l'ont abandonnée, ou ceux qui l'utilisent à contrecœur).</em></p>
+                                <label for="nonClientsDescription" class="form-label">Description des non-clients ciblés :</label>
+                                <textarea class="form-control mb-2" id="nonClientsDescription" rows="3" placeholder="Décrivez les caractéristiques et les raisons pour lesquelles ces non-clients ne sont pas servis par l'industrie actuelle." aria-label="Description des non-clients ciblés"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 5 : Exploration des Alternatives et Substituts</h5>
+                                <p class="small text-muted"><em>Quelles sont les solutions alternatives que les clients utilisent actuellement pour résoudre le même problème, même si elles ne font pas partie de votre industrie directe ?</em></p>
+                                <label for="alternativesDescription" class="form-label">Description des alternatives et substituts :</label>
+                                <textarea class="form-control mb-2" id="alternativesDescription" rows="3" placeholder="Ex: Pour le transport, les gens peuvent marcher, faire du vélo, utiliser les transports en commun..." aria-label="Description des alternatives et substituts"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 6 : Réimaginer la chaîne de valeur</h5>
+                                <p class="small text-muted"><em>Comment pouvez-vous simplifier, automatiser ou restructurer les étapes de la création et de la livraison de valeur pour réduire les coûts ou augmenter l'efficacité ?</em></p>
+                                <label for="valueChainDescription" class="form-label">Idées pour réimaginer la chaîne de valeur :</label>
+                                <textarea class="form-control mb-2" id="valueChainDescription" rows="3" placeholder="Ex: Supprimer les intermédiaires, automatiser le service client, utiliser la logistique inversée..." aria-label="Idées pour réimaginer la chaîne de valeur"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 7 : Explorer les Tendances Futures</h5>
+                                <p class="small text-muted"><em>Quelles sont les tendances technologiques, sociales, économiques ou environnementales qui pourraient créer de nouvelles opportunités pour votre Océan Bleu ?</em></p>
+                                <label for="trendsDescription" class="form-label">Tendances identifiées et leur impact potentiel :</label>
+                                <textarea class="form-control mb-2" id="trendsDescription" rows="3" placeholder="Ex: IA, blockchain, économie circulaire, télétravail, vieillissement de la population..." aria-label="Tendances identifiées et leur impact potentiel"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 8 : Définir une nouvelle courbe de valeur</h5>
+                                <p class="small text-muted"><em>Comment votre nouvelle offre se positionne-t-elle par rapport aux facteurs clés de l'industrie après application de la grille ERRC ?</em></p>
+                                <div class="text-center">
+                                    <canvas id="simulationStrategyCanvas" height="300" aria-label="Graphique de la toile stratégique de simulation"></canvas>
+                                </div>
+                                <p class="mt-3 small text-muted"><em>(Ce graphique se mettra à jour avec vos innovations des étapes précédentes.)</em></p>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 9 : Identifier les Obstacles à Lever</h5>
+                                <p class="small text-muted"><em>Quels sont les obstacles (cognitifs, de ressources, de motivation, politiques) qui pourraient entraver l'adoption de votre nouvelle stratégie ?</em></p>
+                                <label for="hurdlesDescription" class="form-label">Obstacles identifiés et stratégies pour les surmonter :</label>
+                                <textarea class="form-control mb-2" id="hurdlesDescription" rows="3" placeholder="Ex: Résistance au changement des employés, réglementation, manque de financement..." aria-label="Obstacles identifiés et stratégies pour les surmonter"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded">
+                                <h5>Étape 10 : Élaborer un Modèle Économique Innovant</h5>
+                                <p class="small text-muted"><em>Comment allez-vous générer des revenus et quelle sera votre structure de coûts pour soutenir votre Océan Bleu ?</em></p>
+                                <label for="businessModelDescription" class="form-label">Description du modèle économique innovant :</label>
+                                <textarea class="form-control mb-2" id="businessModelDescription" rows="3" placeholder="Ex: Abonnement, freemium, paiement à l'usage, modèle de plateforme..." aria-label="Description du modèle économique innovant"></textarea>
+                            </div>
+
+                            <div class="mb-4 p-3 border rounded value-prop-section">
+                                <h5>Étape 11: Créez votre Value Proposition Canvas</h5>
+                                <p class="small text-muted"><em>Décrivez en détail le profil de votre client cible et comment votre proposition de valeur répond à ses "jobs", "pains" et "gains".</em></p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Profil Client</h6>
+                                        <label for="customerJobs">Jobs (Tâches) :</label><textarea class="form-control mb-2" id="customerJobs" placeholder="Tâches fonctionnelles, sociales, émotionnelles que le client essaie d'accomplir." aria-label="Tâches du client"></textarea>
+                                        <label for="customerPains">Pains (Douleurs) :</label><textarea class="form-control mb-2" id="customerPains" placeholder="Frustrations, risques, obstacles que le client rencontre." aria-label="Douleurs du client"></textarea>
+                                        <label for="customerGains">Gains (Bénéfices) :</label><textarea class="form-control mb-2" id="customerGains" placeholder="Résultats, bénéfices, désirs que le client attend." aria-label="Bénéfices du client"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Proposition de Valeur</h6>
+                                        <label for="valueProductsServices">Produits & Services :</label><textarea class="form-control mb-2" id="valueProductsServices" placeholder="Ce que vous offrez pour aider le client." aria-label="Produits et services"></textarea>
+                                        <label for="valueGainCreators">Gain Creators (Créateurs de Bénéfices) :</label><textarea class="form-control mb-2" id="valueGainCreators" placeholder="Comment vos produits/services créent des gains pour le client." aria-label="Créateurs de bénéfices"></textarea>
+                                        <label for="valuePainRelievers">Pain Relievers (Atténuateurs de Douleurs) :</label><textarea class="form-control mb-2" id="valuePainRelievers" placeholder="Comment vos produits/services réduisent les douleurs du client." aria-label="Atténuateurs de douleurs"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 text-center p-3 border rounded">
+                                <h5>Étape 12: Générez votre Stratégie Océan Bleu</h5>
+                                <p class="small text-muted"><em>Cliquez ci-dessous pour compiler toutes vos idées et visualiser votre stratégie Océan Bleu complète.</em></p>
+                                <button class="btn btn-lg btn-blue-ocean" id="generateStrategy">Générer la Stratégie Complète</button>
+                            </div>
+
+                            <div id="simulationResult" class="mt-5 p-4 bg-light rounded shadow-sm" style="display:none;">
+                                <h5 class="mb-3 text-blue-ocean">Votre Proposition de Valeur Océan Bleu Générée:</h5>
+                                <div class="card p-4 bg-white">
+                                    <p id="resultText" class="mb-0 fs-5"></p>
+                                </div>
+                                <h5 class="mt-4 mb-3 text-blue-ocean">Votre Nouvelle Courbe de Valeur:</h5>
+                                <canvas id="finalStrategyCanvas" height="300" aria-label="Graphique de la courbe de valeur finale"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-africa" role="tabpanel" aria-labelledby="pills-africa-tab">
+            <div class="container my-5">
+                <h2 class="text-center section-title mb-5">Stratégie Océan Bleu en Afrique : Opportunités et Cas Pratiques</h2>
+                <p class="text-center lead mb-5">L'Afrique, avec sa démographie unique, ses défis spécifiques et son dynamisme entrepreneurial, est un terrain fertile pour la création d'Océans Bleus. Explorez le potentiel inexploité du continent.</p>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-6">
+                        <div class="tool-card h-100">
+                            <h4 class="mb-3 text-blue-ocean">Pourquoi l'Afrique est un Océan Bleu ?</h4>
+                            <p>L'Afrique présente un terrain fertile pour la Stratégie Océan Bleu en raison de ses marchés en pleine croissance, de sa population jeune et majoritairement non-consommatrice de services traditionnels, de l'adoption rapide de la technologie mobile et de l'existence de nombreux "non-clients" avec des besoins non satisfaits de manière adéquate par les offres existantes.</p>
+                            <ul>
+                                <li><strong>Population jeune et dynamique :</strong> Plus de 60% de la population africaine a moins de 25 ans, ce qui représente une force de travail et une base de consommateurs immense, ouverte aux nouvelles solutions et aux innovations.</li>
+                                <li><strong>Digitalisation rapide et mobile-first :</strong> L'adoption massive du mobile et de l'Internet, souvent sans passer par les infrastructures fixes, crée de nouvelles voies pour offrir des services et des produits à grande échelle, même dans les zones reculées.</li>
+                                <li><strong>Besoins fondamentaux non satisfaits :</strong> De nombreux secteurs (santé, éducation, énergie, services financiers, agriculture) souffrent d'un manque criant de services de base ou de solutions adaptées aux réalités locales, créant d'énormes espaces de marché inexploités.</li>
+                                <li><strong>Moins de concurrence traditionnelle :</strong> Comparé aux marchés matures d'Occident, il y a moins de "concurrence de l'océan rouge" dans de nombreux domaines, laissant plus de place pour l'innovation disruptive et la création de valeur.</li>
+                                <li><strong>Diversité culturelle et économique :</strong> La richesse des cultures et des économies africaines offre des niches uniques pour des solutions hyper-localisées et adaptées.</li>
+                            </ul>
+                            <p class="small text-muted"><em>L'approche Océan Bleu permet de transformer ces défis en opportunités en se concentrant sur la création de valeur pour les non-clients.</em></p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="tool-card h-100">
+                            <h4 class="mb-3 text-blue-ocean">Domaines Clés pour l'Innovation Océan Bleu en Afrique</h4>
+                            <p>Les opportunités abondent dans des secteurs qui répondent aux besoins fondamentaux de la population africaine, souvent avec des modèles économiques innovants et une forte intégration technologique:</p>
+                            <ul>
+                                <li><strong>Services financiers (FinTech) :</strong> Paiements mobiles (comme M-Pesa), micro-crédits, assurances numériques pour les non-bancarisés, plateformes de prêt peer-to-peer.</li>
+                                <li><strong>Santé (HealthTech) :</strong> Télémédecine, solutions de diagnostic abordables et portables, distribution de médicaments par drones (Zipline), cliniques mobiles, plateformes de gestion de dossiers médicaux.</li>
+                                <li><strong>Éducation (EdTech) :</strong> Plateformes d'e-learning accessibles via mobile, formation professionnelle innovante et adaptée aux besoins du marché du travail local, contenus éducatifs en langues locales.</li>
+                                <li><strong>Énergie (CleanTech) :</strong> Solutions d'énergie renouvelable hors réseau (solaire domestique) pour les communautés isolées, mini-réseaux électriques, cuisson propre.</li>
+                                <li><strong>Agriculture (AgriTech) :</strong> Technologies agraires pour optimiser les rendements (irrigation intelligente, capteurs), plateformes de mise en relation des agriculteurs avec les marchés, chaînes d'approvisionnement numérisées (Twiga Foods).</li>
+                                <li><strong>Logistique et transport :</strong> Solutions de livraison du dernier kilomètre dans les zones urbaines et rurales, plateformes de covoiturage adaptées, mobilité urbaine abordable (mototaxis numérisés).</li>
+                                <li><strong>Commerce de détail (e-commerce) :</strong> Plateformes de commerce électronique adaptées aux infrastructures locales, livraison rapide, modèles de vente sociale.</li>
+                            </ul>
+                            <p class="small text-muted"><em>Ces secteurs, en répondant à des lacunes massives, offrent un potentiel de croissance exponentiel.</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-center section-title mt-5 mb-5">Études de Cas Africaines de l'Océan Bleu</h3>
+                <p class="text-center lead mb-5">Découvrez des exemples concrets d'entreprises africaines qui ont réussi à créer leur propre Océan Bleu.</p>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card mpesa-card h-100">
+                            <img src="https://placehold.co/500x300/00B140/FFFFFF?text=M-Pesa" class="card-img-top" alt="Image de M-Pesa">
+                            <div class="card-body">
+                                <h5 class="card-title">M-Pesa, Kenya : L'argent mobile pour tous</h5>
+                                <p class="card-text">Paiements mobiles pour la population non bancarisée, créant un nouveau marché financier en Afrique. Il a éliminé le besoin de comptes bancaires physiques et réduit les coûts de transaction.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Services Financiers</small>
+                                    <button class="btn btn-sm btn-blue-ocean" data-bs-toggle="modal" data-bs-target="#mpesaCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100 africa-card">
+                            <img src="https://placehold.co/500x300/FFD700/000000?text=Zipline" class="card-img-top" alt="Image de Zipline">
+                            <div class="card-body">
+                                <h5 class="card-title">Zipline, Rwanda/Ghana : Livraison médicale par drone</h5>
+                                <p class="card-text">Livraison de produits médicaux essentiels (sang, vaccins) par drone dans les zones reculées, comblant un vide crucial dans la logistique de la santé et sauvant des vies grâce à une rapidité inégalée.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Logistique & Santé</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ziplineCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100 africa-card">
+                            <img src="https://placehold.co/500x300/FFD700/000000?text=Twiga+Foods" class="card-img-top" alt="Image de Twiga Foods">
+                            <div class="card-body">
+                                <h5 class="card-title">Twiga Foods, Kenya : Optimisation de la chaîne agricole</h5>
+                                <p class="card-text">Rationalisation de la chaîne d'approvisionnement agricole pour les petits agriculteurs et les vendeurs informels, améliorant l'accès aux produits frais et réduisant les pertes post-récolte grâce à la technologie et la logistique.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Agriculture & Logistique</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#twigaFoodsCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100 africa-card">
+                            <img src="https://placehold.co/500x300/FFD700/000000?text=Andela" class="card-img-top" alt="Image d'Andela">
+                            <div class="card-body">
+                                <h5 class="card-title">Andela, Nigeria : Développer les talents Tech africains</h5>
+                                <p class="card-text">Andela forme et place des ingénieurs logiciels africains de haut niveau auprès d'entreprises mondiales, comblant le fossé des talents tech et offrant des opportunités sans précédent à la jeunesse africaine.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Éducation & Tech</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#andelaCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100 africa-card">
+                            <img src="https://placehold.co/500x300/FFD700/000000?text=Zola+Electric" class="card-img-top" alt="Image de Zola Electric">
+                            <div class="card-body">
+                                <h5 class="card-title">Zola Electric (Off-Grid Electric), Tanzanie : Énergie solaire pour tous</h5>
+                                <p class="card-text">Fournit des systèmes d'énergie solaire domestique abordables et payables par téléphone mobile aux communautés sans accès au réseau électrique, créant un marché de l'énergie propre et accessible.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Énergie</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#zolaElectricCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card case-study-card h-100 africa-card">
+                            <img src="https://placehold.co/500x300/FFD700/000000?text=LifeBank" class="card-img-top" alt="Image de LifeBank">
+                            <div class="card-body">
+                                <h5 class="card-title">LifeBank, Nigeria : Logistique du sang et de l'oxygène</h5>
+                                <p class="card-text">Une entreprise de logistique médicale qui utilise la technologie pour livrer rapidement des produits sanguins et de l'oxygène aux hôpitaux nigérians, réduisant drastiquement les délais et les pénuries critiques.</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Santé & Logistique</small>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#lifebankCaseModal">Voir l'analyse</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2023 Stratégie Océan Bleu. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="strategyCanvasModal" tabindex="-1" aria-labelledby="strategyCanvasModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="strategyCanvasModalLabel">La Toile Stratégique</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>La Toile Stratégique est un outil de diagnostic et d'action qui capture l'état actuel de la concurrence dans un marché donné. Elle représente graphiquement la performance relative des concurrents sur les facteurs clés sur lesquels l'industrie rivalise. C'est le point de départ visuel pour identifier les opportunités d'Océan Bleu.</p>
+                    <h6>Comment l'utiliser ?</h6>
+                    <ol>
+                        <li><strong>Identifier les facteurs de concurrence :</strong> Listez tous les facteurs sur lesquels les entreprises de votre industrie rivalisent (ex: prix, service client, technologie, qualité, design, commodité).</li>
+                        <li><strong>Évaluer les niveaux d'offre :</strong> Pour chaque facteur, évaluez le niveau d'offre de chaque concurrent (ou de l'industrie moyenne) sur une échelle (ex: de 1 à 10).</li>
+                        <li><strong>Dessiner la courbe de valeur :</strong> Reliez les points pour chaque concurrent afin de créer leur "courbe de valeur".</li>
+                        <li><strong>Analyser :</strong> Cherchez les similitudes (concurrence par imitation), les points de sur-ingénierie, et surtout les lacunes où de nouveaux facteurs pourraient être créés.</li>
+                    </ol>
+                    <h6>Exemple:</h6>
+                    <p>Pour l'industrie du transport, les facteurs pourraient être le prix, la commodité, la rapidité, le confort, la sécurité. La toile montrera comment les taxis traditionnels se positionnent par rapport aux VTC (comme Uber) ou aux transports en commun.</p>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Exemple+Toile+Stratégique" class="img-fluid rounded mb-3" alt="Exemple de Toile Stratégique">
+                    <p class="small text-muted"><em>La Toile Stratégique vous aide à visualiser la valeur que les acheteurs reçoivent sur les différents facteurs de concurrence.</em></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="fourActionsModal" tabindex="-1" aria-labelledby="fourActionsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="fourActionsModalLabel">Le Cadre des Quatre Actions</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>Le Cadre des Quatre Actions est un outil puissant pour remettre en question la logique stratégique d'une industrie et construire une nouvelle courbe de valeur. Il se compose de quatre questions clés qui forcent les entreprises à penser au-delà de la concurrence existante.</p>
+                    <h6>Les Quatre Questions :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Quels facteurs que l'industrie tient pour acquis devraient être éliminés ? (Coûts et complexité inutiles)</li>
+                        <li><strong>Réduire :</strong> Quels facteurs devraient être réduits bien en dessous du standard de l'industrie ? (Diminuer l'investissement dans des facteurs moins importants)</li>
+                        <li><strong>Rehausser :</strong> Quels facteurs devraient être rehaussés bien au-dessus du standard de l'industrie ? (Investir dans ce qui crée une valeur exceptionnelle)</li>
+                        <li><strong>Créer :</strong> Quels facteurs devraient être créés que l'industrie n'a jamais offerts ? (Innover pour une nouvelle demande)</li>
+                    </ul>
+                    <h6>Bénéfices :</h6>
+                    <p>Ce cadre permet de briser le compromis valeur-coût, en poursuivant simultanément la différenciation et la réduction des coûts. Il mène à l'innovation de valeur, la pierre angulaire de la Stratégie Océan Bleu.</p>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Cadre+des+Quatre+Actions" class="img-fluid rounded mb-3" alt="Cadre des Quatre Actions">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errcMatrixModal" tabindex="-1" aria-labelledby="errcMatrixModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="errcMatrixModalLabel">La Matrice ERRC</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>La Matrice ERRC (Éliminer, Réduire, Rehausser, Créer) est la représentation opérationnelle du Cadre des Quatre Actions. C'est un tableau simple mais puissant qui aide les équipes à systématiser leurs réflexions sur la manière de reconstruire la courbe de valeur d'une industrie.</p>
+                    <h6>Comment l'utiliser ?</h6>
+                    <p>Pour chaque facteur de concurrence identifié dans votre Toile Stratégique, posez-vous les questions suivantes et notez vos décisions dans la matrice :</p>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Quels facteurs ne sont plus pertinents ou ne créent pas de valeur pour les non-clients ?</li>
+                        <li><strong>Réduire :</strong> Quels facteurs sont sur-conçus ou sur-investis par l'industrie ?</li>
+                        <li><strong>Rehausser :</strong> Quels facteurs sont sous-évalués et devraient être améliorés de manière significative ?</li>
+                        <li><strong>Créer :</strong> Quels nouveaux facteurs de valeur n'ont jamais été offerts par l'industrie ?</li>
+                    </ul>
+                    <h6>Exemple :</h6>
+                    <p>Pour le Cirque du Soleil :</p>
+                    <ul>
+                        <li>Éliminer : Animaux, numéros de stars, concessions multiples.</li>
+                        <li>Réduire : Humour et danger.</li>
+                        <li>Rehausser : Thème, environnement raffiné, musique, danse.</li>
+                        <li>Créer : Récit artistique, multiples productions, ambiance de théâtre.</li>
+                    </ul>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Matrice+ERRC" class="img-fluid rounded mb-3" alt="Matrice ERRC">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="nonCustomersModal" tabindex="-1" aria-labelledby="nonCustomersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="nonCustomersModalLabel">Les Trois Niveaux de Non-clients</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>La Stratégie Océan Bleu met l'accent sur l'attraction des non-clients plutôt que sur la concurrence pour les clients existants. Il existe trois niveaux de non-clients, chacun représentant une opportunité différente :</p>
+                    <ol>
+                        <li><strong>Non-clients de "premier niveau" :</strong> Ce sont les "bientôt" non-clients, qui sont sur le point de quitter votre marché. Ils sont des clients existants qui utilisent l'offre actuelle, mais avec des compromis et une insatisfaction croissante.</li>
+                        <li><strong>Non-clients de "deuxième niveau" :</strong> Ce sont les "refusants", qui refusent consciemment l'offre de votre industrie. Ils ont des besoins qui pourraient être satisfaits par votre industrie, mais ils ont choisi des alternatives ou n'utilisent rien du tout.</li>
+                        <li><strong>Non-clients de "troisième niveau" :</strong> Ce sont les "non-explorés", le plus grand groupe, qui n'ont jamais été considérés comme des clients potentiels. Leurs besoins sont souvent très différents de ceux des clients traditionnels.</li>
+                    </ol>
+                    <h6>Pourquoi les cibler ?</h6>
+                    <p>En comprenant pourquoi ces groupes ne sont pas des clients, vous pouvez identifier les barrières à l'entrée et les points de douleur à éliminer ou à réduire, et les nouvelles valeurs à créer pour les attirer. C'est une source massive de nouvelle demande.</p>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Trois+Niveaux+de+Non-clients" class="img-fluid rounded mb-3" alt="Trois Niveaux de Non-clients">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="buyerUtilityModal" tabindex="-1" aria-labelledby="buyerUtilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="buyerUtilityModalLabel">La Carte d'Utilité de l'Acheteur</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>La Carte d'Utilité de l'Acheteur est un cadre qui aide les entreprises à identifier l'ensemble des leviers d'utilité qu'elles peuvent actionner pour offrir une valeur exceptionnelle aux acheteurs. Elle examine l'expérience client à travers six étapes du cycle d'expérience acheteur et six leviers d'utilité.</p>
+                    <h6>Les Six Étapes du Cycle d'Expérience Acheteur :</h6>
+                    <p>Achat, Livraison, Utilisation, Compléments, Maintenance, Élimination.</p>
+                    <h6>Les Six Leviers d'Utilité :</h6>
+                    <p>Productivité client, Simplicité, Commodité, Réduction des risques, Fun et image, Respect de l'environnement.</p>
+                    <h6>Application :</h6>
+                    <p>En croisant ces étapes et ces leviers, vous pouvez identifier les "points chauds" où les acheteurs rencontrent des frustrations ou des opportunités de gains inexplorés, et ainsi innover pour créer une utilité supérieure.</p>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Carte+d'Utilité+de+l'Acheteur" class="img-fluid rounded mb-3" alt="Carte d'Utilité de l'Acheteur">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="priceCorridorModal" tabindex="-1" aria-labelledby="priceCorridorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="priceCorridorModalLabel">Le Corridor de Prix de la Masse des Acheteurs</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Qu'est-ce que c'est ?</h6>
+                    <p>Le Corridor de Prix de la Masse des Acheteurs est un cadre qui aide à fixer le juste prix stratégique pour attirer la masse des acheteurs cibles de votre Océan Bleu. L'objectif n'est pas de sous-coter la concurrence, mais de s'assurer que votre offre est perçue comme ayant une valeur irrésistible à un prix accessible.</p>
+                    <h6>Trois Étapes pour Fixer le Prix Stratégique :</h6>
+                    <ol>
+                        <li><strong>Définir le corridor de prix :</strong> Identifiez les prix des alternatives et des substituts. Le prix de votre Océan Bleu devrait se situer dans un corridor qui attire la masse des acheteurs.</li>
+                        <li><strong>Spécifier le niveau de prix :</strong> Choisissez un point de prix au sein du corridor en fonction de la nouveauté et de la protection de votre offre (brevets, etc.).</li>
+                        <li><strong>Construire le modèle de profit :</strong> Assurez-vous que votre structure de coûts permet de réaliser un profit suffisant au prix choisi.</li>
+                    </ol>
+                    <h6>Importance :</h6>
+                    <p>Un prix stratégique est crucial pour la viabilité de l'Océan Bleu. Il doit être suffisamment bas pour attirer la masse des acheteurs, mais suffisamment élevé pour garantir la rentabilité et la durabilité de votre modèle économique.</p>
+                    <img src="https://placehold.co/600x350/E0E0E0/333333?text=Corridor+de+Prix" class="img-fluid rounded mb-3" alt="Corridor de Prix">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uberCaseModal" tabindex="-1" aria-labelledby="uberCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="uberCaseModalLabel">Analyse de Cas : Uber</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge des Taxis Traditionnels</h6>
+                    <p>Avant Uber, l'industrie du taxi était caractérisée par des licences coûteuses (médaillons), des temps d'attente incertains, des difficultés de paiement, et une expérience client souvent inconsistante. C'était un marché saturé et peu innovant.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les médaillons de taxi coûteux, les centres d'appel, les paiements en espèces obligatoires, les pourboires perçus comme obligatoires.</li>
+                        <li><strong>Réduire :</strong> Les temps d'attente, la complexité de la réservation, le stress lié à la recherche d'un taxi.</li>
+                        <li><strong>Rehausser :</strong> La commodité (commande via app), la transparence (suivi en temps réel, prix estimé), la sécurité (identification du chauffeur et du véhicule), la qualité du service (notation des chauffeurs).</li>
+                        <li><strong>Créer :</strong> Un réseau de chauffeurs non professionnels (économie de partage), un système de paiement intégré et sans friction, des options de véhicules multiples (UberX, Black, Pool), la possibilité de noter le service.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>Uber a créé un nouvel espace de marché (le covoiturage) en offrant une proposition de valeur supérieure aux non-clients des taxis (ceux qui trouvaient les taxis trop chers, peu pratiques ou peu fiables). Cela a rendu la concurrence avec les taxis traditionnels largement non pertinente pour une grande partie de la population.</p>
+                    <img src="https://placehold.co/600x350/000000/FFFFFF?text=Toile+Stratégique+Uber" class="img-fluid rounded mb-3" alt="Toile Stratégique Uber">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="airbnbCaseModal" tabindex="-1" aria-labelledby="airbnbCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="airbnbCaseModalLabel">Analyse de Cas : Airbnb</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge de l'Hôtellerie Traditionnelle</h6>
+                    <p>L'industrie hôtelière était dominée par des chaînes standardisées, des prix élevés, et une expérience souvent impersonnelle. Les options alternatives étaient limitées et peu pratiques pour les voyageurs cherchant l'authenticité ou un budget limité.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les frais généraux des hôtels (personnel nombreux, infrastructures coûteuses), la standardisation des chambres, l'impersonnalité du service.</li>
+                        <li><strong>Réduire :</strong> Le prix par nuitée par rapport aux hôtels comparables, la nécessité de passer par des agences de voyage.</li>
+                        <li><strong>Rehausser :</strong> L'authenticité de l'expérience (vivre comme un local), l'espace disponible (appartements entiers), la flexibilité (séjours de courte ou longue durée), la variété des options (châteaux, cabanes, appartements).</li>
+                        <li><strong>Créer :</strong> Une plateforme de confiance pour le partage de logements entre particuliers, une nouvelle source de revenus pour les propriétaires, un sentiment d'appartenance pour les voyageurs, des expériences locales uniques.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>Airbnb a créé un segment entièrement nouveau dans l'hébergement, attirant des millions de "non-clients" des hôtels qui recherchaient une expérience différente, plus authentique et souvent plus abordable. L'entreprise a transformé des actifs sous-utilisés (chambres et maisons vides) en une source de valeur massive.</p>
+                    <img src="https://placehold.co/600x350/FF5A5F/FFFFFF?text=Toile+Stratégique+Airbnb" class="img-fluid rounded mb-3" alt="Toile Stratégique Airbnb">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mpesaCaseModal" tabindex="-1" aria-labelledby="mpesaCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="mpesaCaseModalLabel">Analyse de Cas : M-Pesa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge des Services Bancaires Traditionnels en Afrique</h6>
+                    <p>En Afrique, une grande partie de la population est "non bancarisée" ou "sous-bancarisée" en raison du manque d'accès aux infrastructures bancaires physiques, des frais élevés et de la complexité des procédures. Les transferts d'argent se faisaient souvent en espèces, avec des risques de sécurité et des coûts logistiques importants.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Le besoin d'un compte bancaire physique, les longues files d'attente aux guichets, la complexité des transactions bancaires, les risques liés au transport d'argent liquide.</li>
+                        <li><strong>Réduire :</strong> Les frais de transaction pour les petits montants, la distance aux points de service (grâce aux agents M-Pesa omniprésents).</li>
+                        <li><strong>Rehausser :</strong> L'accessibilité (via un simple téléphone mobile, même non-smartphone), la rapidité des transactions (instantané), la sécurité (transactions numériques), l'inclusivité financière pour des millions de personnes.</li>
+                        <li><strong>Créer :</strong> Un réseau d'agents de proximité (boutiques, kiosques) pour les dépôts/retraits d'espèces, un système de micro-paiements via SMS, un nouveau marché pour les services financiers mobiles.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>M-Pesa a créé un Océan Bleu massif en fournissant une solution simple, accessible et abordable pour les transferts d'argent et les paiements, ciblant des millions de non-clients des banques. Il est devenu un pilier de l'économie kenyane et un modèle pour l'inclusion financière numérique dans le monde.</p>
+                    <img src="https://placehold.co/600x350/00B140/FFFFFF?text=Toile+Stratégique+M-Pesa" class="img-fluid rounded mb-3" alt="Toile Stratégique M-Pesa">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cirqueDuSoleilCaseModal" tabindex="-1" aria-labelledby="cirqueDuSoleilCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="cirqueDuSoleilCaseModalLabel">Analyse de Cas : Cirque du Soleil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge du Cirque Traditionnel</h6>
+                    <p>Le cirque traditionnel était en déclin, confronté à la concurrence d'autres formes de divertissement, à la montée des préoccupations éthiques concernant les animaux, et à des coûts élevés liés aux numéros de stars. Le public était principalement familial et en diminution.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les animaux, les numéros de stars coûteux, les concessions multiples (popcorn, sodas) qui dévalorisaient l'expérience.</li>
+                        <li><strong>Réduire :</strong> L'humour potache, le danger (moins d'actes purement dangereux), les multiples pistes.</li>
+                        <li><strong>Rehausser :</strong> Le thème et le raffinement de l'environnement, la musique originale et les chorégraphies, la danse et les acrobaties artistiques.</li>
+                        <li><strong>Créer :</strong> Un récit artistique et une histoire pour chaque spectacle, des productions multiples, une ambiance de théâtre sophistiquée, un nouveau public adulte et corporatif.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>Le Cirque du Soleil a créé un Océan Bleu en réinventant le cirque, transformant une forme de divertissement en déclin en une expérience artistique haut de gamme. Ils ont attiré un nouveau segment de clients prêts à payer un prix plus élevé pour une valeur perçue bien supérieure, tout en réduisant considérablement les coûts traditionnels du cirque.</p>
+                    <img src="https://placehold.co/600x350/5A2D82/FFFFFF?text=Toile+Stratégique+Cirque+du+Soleil" class="img-fluid rounded mb-3" alt="Toile Stratégique Cirque du Soleil">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="netflixCaseModal" tabindex="-1" aria-labelledby="netflixCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="netflixCaseModalLabel">Analyse de Cas : Netflix</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge de la Location de Vidéos</h6>
+                    <p>L'industrie de la location de vidéos était dominée par des géants comme Blockbuster, avec des frais de retard, des sélections limitées en magasin et l'inconvénient de devoir se déplacer. Le marché était saturé et la concurrence féroce.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les frais de retard, les magasins physiques, les dates de retour, la disponibilité limitée en magasin.</li>
+                        <li><strong>Réduire :</strong> Le besoin de se déplacer, la complexité de la sélection (grâce aux recommandations).</li>
+                        <li><strong>Rehausser :</strong> La commodité (livraison à domicile, puis streaming), le choix (catalogue illimité), la personnalisation (algorithmes de recommandation).</li>
+                        <li><strong>Créer :</strong> Un modèle d'abonnement mensuel illimité, le streaming vidéo à la demande, la production de contenu original.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>Netflix a d'abord créé un Océan Bleu dans la location de DVD par correspondance, puis un second, bien plus vaste, avec le streaming. En éliminant les irritants majeurs de l'industrie traditionnelle et en créant une valeur inédite (accès illimité, commodité, contenu original), ils ont rendu la concurrence obsolète pour des millions de consommateurs.</p>
+                    <img src="https://placehold.co/600x350/E50914/FFFFFF?text=Toile+Stratégique+Netflix" class="img-fluid rounded mb-3" alt="Toile Stratégique Netflix">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="teslaCaseModal" tabindex="-1" aria-labelledby="teslaCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="teslaCaseModalLabel">Analyse de Cas : Tesla</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : L'Océan Rouge de l'Industrie Automobile</h6>
+                    <p>L'industrie automobile était dominée par des constructeurs établis, avec des moteurs à combustion interne, un modèle de vente traditionnel via des concessionnaires, et une innovation incrémentale. Les véhicules électriques existants étaient souvent perçus comme peu performants ou peu attrayants.</p>
+                    <h6>Application de la Stratégie Océan Bleu :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les concessionnaires tiers, la dépendance aux combustibles fossiles, les émissions polluantes, les compromis sur la performance pour les véhicules électriques.</li>
+                        <li><strong>Réduire :</strong> La complexité de l'entretien (moins de pièces mobiles), le bruit du moteur, l'anxiété liée à l'autonomie (grâce au réseau Supercharger).</li>
+                        <li><strong>Rehausser :</strong> La performance (accélération, autonomie), la technologie embarquée (mises à jour logicielles OTA, grand écran tactile), l'expérience client directe (vente en ligne, service mobile), le design futuriste.</li>
+                        <li><strong>Créer :</strong> Un réseau de recharge rapide dédié (Supercharger), la conduite autonome (Autopilot), un écosystème énergétique intégré (batteries domestiques, panneaux solaires), une image de marque axée sur l'innovation et la durabilité.</li>
+                    </ul>
+                    <h6>Résultat :</h6>
+                    <p>Tesla a créé un Océan Bleu en positionnant les véhicules électriques non pas comme une alternative écologique et "ennuyeuse", mais comme des voitures de luxe, performantes et technologiquement avancées. Ils ont attiré une nouvelle clientèle soucieuse de l'environnement mais aussi de la performance et de l'innovation, transformant l'image du véhicule électrique et forçant l'ensemble de l'industrie à s'adapter.</p>
+                    <img src="https://placehold.co/600x350/CC0000/FFFFFF?text=Toile+Stratégique+Tesla" class="img-fluid rounded mb-3" alt="Toile Stratégique Tesla">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ziplineCaseModal" tabindex="-1" aria-labelledby="ziplineCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="ziplineCaseModalLabel">Analyse de Cas : Zipline (Rwanda/Ghana)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : Défis de la logistique médicale en zones reculées</h6>
+                    <p>Dans de nombreuses régions d'Afrique, l'accès aux produits médicaux essentiels (sang, vaccins, médicaments) est entravé par des infrastructures routières limitées, des terrains difficiles et des délais de livraison longs, entraînant des pénuries critiques et des pertes de vies.</p>
+                    <h6>Stratégie Océan Bleu de Zipline :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Le besoin d'infrastructures routières complexes, les longs délais de livraison, les coûts élevés du transport terrestre urgent.</li>
+                        <li><strong>Réduire :</strong> Le gaspillage de produits périssables, la dépendance aux banques de sang locales limitées.</li>
+                        <li><strong>Rehausser :</strong> La rapidité de livraison (en quelques minutes), l'accessibilité aux produits vitaux pour les cliniques isolées, la fiabilité de la chaîne d'approvisionnement.</li>
+                        <li><strong>Créer :</strong> Un service de livraison de produits médicaux par drone autonome et à la demande, un système de commande et de suivi numérique, un modèle logistique "juste à temps" pour les hôpitaux ruraux.</li>
+                    </ul>
+                    <h6>Impact :</h6>
+                    <p>Zipline a créé un Océan Bleu en fournissant une solution logistique médicale aérienne qui était auparavant inimaginable. Ils ont sauvé d'innombrables vies en garantissant que les produits essentiels atteignent les patients en temps voulu, transformant radicalement la chaîne d'approvisionnement de la santé dans des environnements difficiles.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="twigaFoodsCaseModal" tabindex="-1" aria-labelledby="twigaFoodsCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="twigaFoodsCaseModalLabel">Analyse de Cas : Twiga Foods (Kenya)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : Inefficacité de la chaîne d'approvisionnement agricole</h6>
+                    <p>Au Kenya, la chaîne d'approvisionnement des produits agricoles était fragmentée, inefficace et coûteuse. Les petits agriculteurs avaient du mal à accéder aux marchés, subissaient des pertes post-récolte importantes et les vendeurs informels avaient un accès imprévisible à des produits frais de qualité.</p>
+                    <h6>Stratégie Océan Bleu de Twiga Foods :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les nombreux intermédiaires qui augmentaient les coûts et réduisaient les marges des agriculteurs et des vendeurs, le gaspillage dû à une mauvaise logistique.</li>
+                        <li><strong>Réduire :</strong> Le temps et les efforts des agriculteurs pour vendre leurs produits, le risque d'approvisionnement pour les vendeurs.</li>
+                        <li><strong>Rehausser :</strong> L'accès direct aux marchés pour les agriculteurs (prix équitables), la qualité et la fraîcheur des produits pour les vendeurs, la transparence des prix.</li>
+                        <li><strong>Créer :</strong> Une plateforme logistique et de distribution intégrée pour les produits frais, un système de paiement mobile pour les transactions, un accès au financement pour les agriculteurs.</li>
+                    </ul>
+                    <h6>Impact :</h6>
+                    <p>Twiga Foods a créé un Océan Bleu en révolutionnant la chaîne d'approvisionnement agricole, offrant une solution "bout-en-bout" qui bénéficie à la fois aux agriculteurs et aux vendeurs. Ils ont transformé un secteur inefficace en un système plus juste et plus productif, améliorant la sécurité alimentaire et les revenus.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="andelaCaseModal" tabindex="-1" aria-labelledby="andelaCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="andelaCaseModalLabel">Analyse de Cas : Andela (Nigeria)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : Pénurie de talents tech mondiaux vs. potentiel africain inexploité</h6>
+                    <p>Alors que les entreprises technologiques mondiales peinent à trouver suffisamment d'ingénieurs qualifiés, l'Afrique regorge de jeunes talents brillants mais manquant d'accès à une formation de qualité et aux opportunités d'emploi internationales.</p>
+                    <h6>Stratégie Océan Bleu d'Andela :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les barrières géographiques et économiques à l'accès aux emplois tech de haut niveau pour les Africains, le coût élevé et le temps nécessaire à la formation traditionnelle.</li>
+                        <li><strong>Réduire :</strong> Le risque pour les entreprises de recruter des talents à l'étranger (Andela gère la formation et le placement), le temps de recrutement.</li>
+                        <li><strong>Rehausser :</strong> La qualité de la formation (intensive et axée sur les besoins du marché), la diversité des équipes tech mondiales, les opportunités de carrière pour les jeunes Africains.</li>
+                        <li><strong>Créer :</strong> Un pipeline de talents tech africains d'élite, un modèle de "talent-as-a-service" pour les entreprises mondiales, une nouvelle voie pour la mobilité sociale et économique en Afrique.</li>
+                    </ul>
+                    <h6>Impact :</h6>
+                    <p>Andela a créé un double Océan Bleu : d'une part, en offrant aux entreprises mondiales un accès à des talents tech de haute qualité et rentables, et d'autre part, en débloquant le potentiel de milliers de jeunes Africains, leur fournissant des carrières significatives et bien rémunérées.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="zolaElectricCaseModal" tabindex="-1" aria-labelledby="zolaElectricCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="zolaElectricCaseModalLabel">Analyse de Cas : Zola Electric (Tanzanie)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : Manque d'accès à l'électricité en Afrique rurale</h6>
+                    <p>Des millions de foyers en Afrique n'ont pas accès à l'électricité fiable, dépendant de sources coûteuses, dangereuses et polluantes comme les lampes à kérosène ou les générateurs diesel. Le raccordement au réseau national est souvent impossible ou trop cher.</p>
+                    <h6>Stratégie Océan Bleu de Zola Electric :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Le besoin de raccordement au réseau électrique national, les coûts initiaux élevés des systèmes solaires.</li>
+                        <li><strong>Réduire :</strong> La dépendance aux combustibles fossiles, les risques pour la santé liés aux lampes à kérosène.</li>
+                        <li><strong>Rehausser :</strong> L'accès à une énergie propre et fiable, la flexibilité de paiement (paiement à l'utilisation via mobile), la capacité de charger des téléphones et d'alimenter des appareils de base.</li>
+                        <li><strong>Créer :</strong> Un modèle de "pay-as-you-go" pour l'énergie solaire domestique, un marché pour les appareils électroménagers compatibles à faible consommation, des opportunités d'emploi pour les installateurs locaux.</li>
+                    </ul>
+                    <h6>Impact :</h6>
+                    <p>Zola Electric a créé un Océan Bleu en rendant l'énergie solaire accessible et abordable pour les populations rurales et non connectées. Ils ont transformé la vie de millions de personnes en leur offrant une source d'énergie durable et en débloquant de nouvelles opportunités économiques et éducatives.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="lifebankCaseModal" tabindex="-1" aria-labelledby="lifebankCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="lifebankCaseModalLabel">Analyse de Cas : LifeBank (Nigeria)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Contexte : Pénuries critiques de sang et d'oxygène au Nigeria</h6>
+                    <p>Au Nigeria, le manque de sang et d'oxygène disponibles en temps opportun dans les hôpitaux est une cause majeure de mortalité, en particulier pour les mères et les bébés. La logistique est inefficace et les banques de sang ne sont pas toujours bien approvisionnées ou accessibles.</p>
+                    <h6>Stratégie Océan Bleu de LifeBank :</h6>
+                    <ul>
+                        <li><strong>Éliminer :</strong> Les retards de livraison critiques, le gaspillage de produits sanguins périmés, la difficulté pour les hôpitaux de trouver rapidement des réserves.</li>
+                        <li><strong>Réduire :</strong> Le taux de mortalité lié aux pénuries de sang et d'oxygène, le coût logistique pour les hôpitaux.</li>
+                        <li><strong>Rehausser :</strong> La rapidité et la fiabilité de la livraison (via une plateforme numérique et un réseau de transport optimisé), la disponibilité des produits médicaux essentiels, la transparence de l'inventaire.</li>
+                        <li><strong>Créer :</strong> Une plateforme logistique numérique pour la distribution de sang et d'oxygène, un réseau de donneurs et de transporteurs optimisé, un modèle de livraison "à la demande" pour les établissements de santé.</li>
+                    </ul>
+                    <h6>Impact :</h6>
+                    <p>LifeBank a créé un Océan Bleu en résolvant un problème logistique vital dans le secteur de la santé. En connectant efficacement l'offre et la demande de produits sanguins et d'oxygène, ils ont réduit les décès évitables et amélioré l'efficacité du système de santé nigérian.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="customAlertModal" tabindex="-1" aria-labelledby="customAlertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="customAlertModalLabel">Information</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body" id="customAlertModalBody">
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-blue-ocean" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Fonction utilitaire pour récupérer la couleur CSS
+        const getBlueOceanColor = () => getComputedStyle(document.documentElement).getPropertyValue('--blue-ocean').trim();
+        const getRedOceanColor = () => getComputedStyle(document.documentElement).getPropertyValue('--red-ocean').trim();
+
+        // Fonction pour afficher un modal d'alerte personnalisé
+        function showAlert(message) {
+            document.getElementById('customAlertModalBody').innerHTML = message;
+            const customAlertModal = new bootstrap.Modal(document.getElementById('customAlertModal'));
+            customAlertModal.show();
+        }
+
+        // --- PARTIE 1: Toile Stratégique Interactive (Onglet Cadres) ---
+        const strategyCanvasCtx = document.getElementById('strategyCanvas').getContext('2d');
+        let strategyCanvasChart; // Déclaré globalement pour pouvoir le détruire/recréer
+
+        const defaultLabels = ['Prix', 'Commodité', 'Technologie', 'Expérience Client', 'Personnalisation', 'Rapidité', 'Accessibilité'];
+        const defaultIndustryData = [7, 6, 5, 7, 4, 6, 5]; // Valeurs par défaut pour l'industrie
+        const defaultBlueOceanData = [3, 9, 8, 9, 7, 9, 9]; // Valeurs par défaut pour un Océan Bleu générique
+
+        // Données pour les comparaisons spécifiques
+        const comparisonData = {
+            "uber": {
+                labels: ['Prix', 'Attente', 'Sélection Véhicules', 'Confort', 'Paiement Facilité', 'Transparence'],
+                industry: [8, 7, 5, 6, 4, 5], // Taxi traditionnel
+                blueOcean: [5, 2, 9, 8, 9, 9], // Uber
+                title: 'Toile Stratégique : Uber vs Taxis Traditionnels'
+            },
+            "airbnb": {
+                labels: ['Prix', 'Standardisation', 'Espace', 'Localisation Unique', 'Expérience Locale', 'Sentiment Appartenance'],
+                industry: [8, 9, 3, 2, 2, 3], // Hôtels traditionnels
+                blueOcean: [3, 4, 9, 9, 8, 9], // Airbnb
+                title: 'Toile Stratégique : Airbnb vs Hôtels Traditionnels'
+            },
+            "mpesa": {
+                labels: ['Accessibilité Bancaire', 'Coûts Transactions', 'Rapidité', 'Sécurité', 'Inclusivité', 'Réseau Agents'],
+                industry: [2, 7, 4, 8, 2, 3], // Banques traditionnelles en Afrique
+                blueOcean: [9, 3, 9, 7, 9, 9], // M-Pesa
+                title: 'Toile Stratégique : M-Pesa vs Banques Traditionnelles'
+            }
+        };
+
+        /**
+         * Crée ou met à jour le graphique de la toile stratégique.
+         * @param {string[]} labels - Les étiquettes des facteurs.
+         * @param {number[]} industryData - Les données pour la courbe de l'industrie standard.
+         * @param {number[]} blueOceanData - Les données pour la courbe de l'Océan Bleu.
+         * @param {string} title - Le titre du graphique.
+         */
+        function createOrUpdateStrategyCanvasChart(labels, industryData, blueOceanData, title = 'Toile Stratégique Interactive') {
+            if (strategyCanvasChart) {
+                strategyCanvasChart.destroy(); // Détruire l'ancienne instance du graphique
+            }
+            strategyCanvasChart = new Chart(strategyCanvasCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Standard de l\'industrie',
+                            data: industryData,
+                            borderColor: getRedOceanColor(),
+                            backgroundColor: 'rgba(234, 67, 53, 0.1)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5,
+                            pointBackgroundColor: getRedOceanColor()
+                        },
+                        {
+                            label: 'Votre Océan Bleu',
+                            data: blueOceanData,
+                            borderColor: getBlueOceanColor(),
+                            backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5,
+                            pointBackgroundColor: getBlueOceanColor()
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title,
+                            font: { size: 18, weight: 'bold' },
+                            color: getBlueOceanColor()
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: 'Niveau d\'Offre',
+                                font: { size: 14 }
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Facteurs de Concurrence',
+                                font: { size: 14 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialisation du graphique de la toile stratégique avec des données par défaut au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            createOrUpdateStrategyCanvasChart(defaultLabels, defaultIndustryData, defaultBlueOceanData);
+        });
+
+        // Écouteurs d'événements pour les boutons de comparaison
+        document.getElementById('compareUber').addEventListener('click', () => {
+            const data = comparisonData.uber;
+            createOrUpdateStrategyCanvasChart(data.labels, data.industry, data.blueOcean, data.title);
+        });
+
+        document.getElementById('compareAirbnb').addEventListener('click', () => {
+            const data = comparisonData.airbnb;
+            createOrUpdateStrategyCanvasChart(data.labels, data.industry, data.blueOcean, data.title);
+        });
+
+        document.getElementById('compareMpesa').addEventListener('click', () => {
+            const data = comparisonData.mpesa;
+            createOrUpdateStrategyCanvasChart(data.labels, data.industry, data.blueOcean, data.title);
+        });
+
+        document.getElementById('resetCanvas').addEventListener('click', () => {
+            createOrUpdateStrategyCanvasChart(defaultLabels, defaultIndustryData, defaultBlueOceanData, 'Toile Stratégique Interactive');
+        });
+
+
+        // --- PARTIE 2: Logique de Simulation (Onglet Simulation Interactive) ---
+        const industrySelect = document.getElementById('industrySelect');
+        const marketFactorsTableBody = document.getElementById('marketFactorsTableBody');
+        const generateStrategyBtn = document.getElementById('generateStrategy');
+        const simulationResult = document.getElementById('simulationResult');
+        const resultText = document.getElementById('resultText');
+        const simulationProgressBar = document.getElementById('simulationProgressBar');
+        const simulationStrategyCanvasCtx = document.getElementById('simulationStrategyCanvas').getContext('2d');
+        const finalStrategyCanvasCtx = document.getElementById('finalStrategyCanvas').getContext('2d');
+
+        let marketFactorChart; // Graphique pour l'étape 2 de la simulation (radar chart)
+        let finalStrategyCanvasChart; // Graphique final de la stratégie (line chart)
+
+        // Données pré-définies pour les industries de la simulation
+        const simulationIndustryData = {
+            "": { // Option "Choisissez une industrie..."
+                factors: [],
+                industryValues: [],
+                innovationValues: []
+            },
+            "transportation": {
+                factors: ['Prix', 'Rapidité', 'Confort', 'Disponibilité', 'Sécurité'],
+                industryValues: [7, 6, 7, 5, 8], // Ex: Taxi traditionnel
+                innovationValues: [5, 9, 8, 9, 9] // Ex: VTC (Uber-like)
+            },
+            "hospitality": {
+                factors: ['Prix', 'Standardisation', 'Espace', 'Localisation', 'Expérience Client'],
+                industryValues: [8, 9, 4, 7, 7], // Ex: Hôtel traditionnel
+                innovationValues: [4, 5, 9, 8, 9] // Ex: Airbnb
+            },
+            "banking": {
+                factors: ['Frais', 'Accessibilité Agence', 'Complexité Services', 'Rapidité Transactions', 'Inclusivité'],
+                industryValues: [8, 7, 8, 6, 3], // Ex: Banque traditionnelle
+                innovationValues: [3, 9, 4, 9, 9] // Ex: Mobile Money (M-Pesa-like)
+            },
+            "education": {
+                factors: ['Coût', 'Flexibilité Horaire', 'Accès Contenu', 'Interaction Profs', 'Reconnaissance Diplôme'],
+                industryValues: [9, 4, 5, 7, 8], // Ex: Université traditionnelle
+                innovationValues: [4, 9, 9, 6, 7] // Ex: Plateforme e-learning
+            },
+            "healthcare": {
+                factors: ['Coût', 'Temps Attente', 'Accès Spécialistes', 'Commodité', 'Prévention'],
+                industryValues: [9, 8, 6, 5, 4], // Ex: Hôpital traditionnel
+                innovationValues: [5, 3, 7, 9, 8] // Ex: Télémédecine
+            },
+            "retail": {
+                factors: ['Prix', 'Choix Produits', 'Commodité Achat', 'Expérience Magasin', 'Personnalisation'],
+                industryValues: [7, 8, 6, 7, 5], // Ex: Supermarché physique
+                innovationValues: [6, 9, 9, 4, 8] // Ex: E-commerce spécialisé
+            },
+            "media": {
+                factors: ['Coût Abonnement', 'Choix Contenu', 'Flexibilité Visionnage', 'Publicités', 'Qualité Production'],
+                industryValues: [7, 6, 4, 9, 7], // Ex: Télévision linéaire
+                innovationValues: [5, 9, 9, 2, 8] // Ex: Plateforme de streaming
+            },
+            "agriculture": {
+                factors: ['Rendement', 'Accès Marché', 'Coût Intrants', 'Gestion Risques', 'Connaissances Agricoles'],
+                industryValues: [6, 5, 7, 4, 5], // Ex: Ferme traditionnelle
+                innovationValues: [8, 9, 5, 7, 8] // Ex: AgriTech
+            }
+        };
+
+        /**
+         * Crée ou met à jour le graphique radar des facteurs de marché pour la simulation.
+         * @param {string[]} labels - Les étiquettes des facteurs.
+         * @param {number[]} industryValues - Les données pour la courbe de l'industrie standard.
+         * @param {number[]} innovationValues - Les données pour la courbe de l'innovation.
+         */
+        function createOrUpdateMarketFactorChart(labels, industryValues, innovationValues) {
+            if (marketFactorChart) {
+                marketFactorChart.destroy();
+            }
+            marketFactorChart = new Chart(simulationStrategyCanvasCtx, { // Utilise le canvas de simulation
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Standard Actuel de l\'Industrie',
+                            data: industryValues,
+                            borderColor: getRedOceanColor(),
+                            backgroundColor: 'rgba(234, 67, 53, 0.2)',
+                            fill: true
+                        },
+                        {
+                            label: 'Votre Innovation',
+                            data: innovationValues,
+                            borderColor: getBlueOceanColor(),
+                            backgroundColor: 'rgba(26, 115, 232, 0.2)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Analyse des Facteurs du Marché',
+                            font: { size: 16, weight: 'bold' },
+                            color: getBlueOceanColor()
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            pointLabels: {
+                                font: { size: 12 }
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                display: false // Masquer les chiffres sur l'axe radial
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Met à jour la table des facteurs de marché et le graphique radar en fonction de l'industrie sélectionnée.
+         */
+        function updateMarketFactors() {
+            const selectedIndustryKey = industrySelect.value;
+            const data = simulationIndustryData[selectedIndustryKey];
+            marketFactorsTableBody.innerHTML = ''; // Vider le tableau
+
+            if (data && data.factors.length > 0) {
+                data.factors.forEach((factor, index) => {
+                    const row = marketFactorsTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${factor}</td>
+                        <td id="industryStandard-${index}">${data.industryValues[index]}</td>
+                        <td><input type="number" class="form-control form-control-sm innovation-input" data-index="${index}" min="1" max="10" value="${data.innovationValues[index]}" aria-label="Niveau d'innovation pour ${factor}"></td>
+                    `;
+                });
+                // Initialiser/Mettre à jour le graphique radar
+                createOrUpdateMarketFactorChart(data.factors, data.industryValues, data.innovationValues);
+
+                // Ajouter les écouteurs d'événements pour les inputs d'innovation
+                document.querySelectorAll('.innovation-input').forEach(input => {
+                    input.addEventListener('input', (event) => {
+                        const idx = parseInt(event.target.dataset.index);
+                        let value = parseInt(event.target.value);
+                        // Valider la valeur entre 1 et 10
+                        if (isNaN(value) || value < 1) value = 1;
+                        if (value > 10) value = 10;
+                        event.target.value = value; // Assurer que la valeur affichée est dans la plage
+                        data.innovationValues[idx] = value; // Mettre à jour les données de l'innovation
+                        marketFactorChart.update(); // Mettre à jour le graphique
+                        updateProgressBar(); // Mettre à jour la barre de progression
+                    });
+                });
+            } else {
+                // Si aucune industrie n'est sélectionnée ou pas de données
+                const row = marketFactorsTableBody.insertRow();
+                row.innerHTML = `<td colspan="3" class="text-center text-muted">Veuillez sélectionner une industrie pour analyser les facteurs.</td>`;
+                if (marketFactorChart) {
+                    marketFactorChart.destroy(); // Détruire le graphique s'il existe
+                }
+            }
+            updateProgressBar(); // Mettre à jour la barre de progression
+        }
+
+        industrySelect.addEventListener('change', updateMarketFactors);
+        // Appeler au chargement pour initialiser la table et le graphique
+        document.addEventListener('DOMContentLoaded', updateMarketFactors);
+
+
+        // Logique de la barre de progression
+        const totalSimulationSteps = 12; // Nombre total d'étapes dans la simulation
+
+        /**
+         * Met à jour la barre de progression de la simulation en fonction des champs remplis.
+         */
+        function updateProgressBar() {
+            let completedSteps = 0;
+
+            // Étape 1: Sélection de l'industrie
+            if (industrySelect.value !== "") {
+                completedSteps++;
+            }
+
+            // Étape 2: Analyse des facteurs actuels du marché (vérifier si tous les inputs sont remplis et valides)
+            const innovationInputs = document.querySelectorAll('#marketFactorsTableBody .innovation-input');
+            const allInnovationInputsValid = innovationInputs.length > 0 && Array.from(innovationInputs).every(input => {
+                const value = parseInt(input.value);
+                return !isNaN(value) && value >= 1 && value <= 10;
+            });
+            if (allInnovationInputsValid) {
+                completedSteps++;
+            }
+
+            // Étape 3: Grille ERRC (vérifier si tous les inputs sont remplis)
+            if (document.getElementById('errcEliminate').value.trim() !== '' &&
+                document.getElementById('errcReduce').value.trim() !== '' &&
+                document.getElementById('errcRaise').value.trim() !== '' &&
+                document.getElementById('errcCreate').value.trim() !== '') {
+                completedSteps++;
+            }
+
+            // Étapes 4 à 10 (vérifier si les textareas sont remplies)
+            const textareas = [
+                'nonClientsDescription', 'alternativesDescription', 'valueChainDescription',
+                'trendsDescription', 'hurdlesDescription', 'businessModelDescription'
+            ];
+            textareas.forEach(id => {
+                if (document.getElementById(id) && document.getElementById(id).value.trim() !== '') {
+                    completedSteps++;
+                }
+            });
+
+            // Étape 11: Value Proposition Canvas (vérifier si au moins un champ de chaque section est rempli)
+            const customerJobs = document.getElementById('customerJobs').value.trim();
+            const customerPains = document.getElementById('customerPains').value.trim();
+            const customerGains = document.getElementById('customerGains').value.trim();
+            const valueProductsServices = document.getElementById('valueProductsServices').value.trim();
+            const valueGainCreators = document.getElementById('valueGainCreators').value.trim();
+            const valuePainRelievers = document.getElementById('valuePainRelievers').value.trim();
+
+            if ((customerJobs || customerPains || customerGains) &&
+                (valueProductsServices || valueGainCreators || valuePainRelievers)) {
+                completedSteps++;
+            }
+
+            // Étape 12: Génération de la stratégie (cette étape est considérée comme complétée une fois le bouton cliqué)
+            // Ne compte pas pour la progression avant le clic.
+
+            const percentage = (completedSteps / totalSimulationSteps) * 100;
+            simulationProgressBar.style.width = percentage + '%';
+            simulationProgressBar.setAttribute('aria-valuenow', percentage);
+            simulationProgressBar.textContent = `${Math.round(percentage)}% des étapes complétées`;
+        }
+
+        // Écouteurs pour toutes les entrées de la simulation pour mettre à jour la barre de progression
+        document.querySelectorAll('#pills-simulation input, #pills-simulation textarea, #pills-simulation select').forEach(element => {
+            element.addEventListener('input', updateProgressBar);
+            element.addEventListener('change', updateProgressBar); // Pour les selects
+        });
+
+        // Initialiser la barre de progression au chargement de la page
+        document.addEventListener('DOMContentLoaded', updateProgressBar);
+
+
+        // Logique de génération de la stratégie complète
+        generateStrategyBtn.addEventListener('click', function() {
+            const industry = industrySelect.value;
+            const eliminate = document.getElementById('errcEliminate').value.trim();
+            const reduce = document.getElementById('errcReduce').value.trim();
+            const raise = document.getElementById('errcRaise').value.trim();
+            const create = document.getElementById('errcCreate').value.trim();
+
+            const customerJobs = document.getElementById('customerJobs').value.trim();
+            const customerPains = document.getElementById('customerPains').value.trim();
+            const customerGains = document.getElementById('customerGains').value.trim();
+            const valueProductsServices = document.getElementById('valueProductsServices').value.trim();
+            const valueGainCreators = document.getElementById('valueGainCreators').value.trim();
+            const valuePainRelievers = document.getElementById('valuePainRelievers').value.trim();
+
+            // Validation des champs requis
+            if (industry === "" || !eliminate || !reduce || !raise || !create ||
+                !customerJobs || !customerPains || !customerGains ||
+                !valueProductsServices || !valueGainCreators || !valuePainRelievers) {
+                showAlert("Veuillez remplir toutes les sections clés (Sélection de l'industrie, Grille ERRC, et Value Proposition Canvas) pour générer votre stratégie complète.");
+                return;
+            }
+
+            // Collecte des données de l'étape 2 (facteurs de marché)
+            const currentMarketFactorsData = simulationIndustryData[industry];
+            const userInnovationValues = Array.from(document.querySelectorAll('.innovation-input')).map(input => parseInt(input.value));
+            const marketFactorLabels = currentMarketFactorsData ? currentMarketFactorsData.factors : [];
+            const industryStandardValues = currentMarketFactorsData ? currentMarketFactorsData.industryValues : [];
+
+            // Vérifier si les inputs d'innovation sont valides
+            const allInnovationInputsValid = userInnovationValues.every(value => !isNaN(value) && value >= 1 && value <= 10);
+            if (!allInnovationInputsValid || userInnovationValues.length === 0) {
+                showAlert("Veuillez vous assurer que tous les niveaux d'innovation dans l'étape 2 sont remplis et valides (entre 1 et 10).");
+                return;
+            }
+
+            // Génération du texte de la stratégie
+            resultText.innerHTML = `
+                <p>Pour l'industrie du <strong>${industrySelect.options[industrySelect.selectedIndex].text}</strong>, votre stratégie Océan Bleu se concentre sur :</p>
+                <ul>
+                    <li><strong>Éliminer :</strong> ${eliminate}</li>
+                    <li><strong>Réduire :</strong> ${reduce}</li>
+                    <li><strong>Rehausser :</strong> ${raise}</li>
+                    <li><strong>Créer :</strong> ${create}</li>
+                </ul>
+                <p>Cette combinaison vise à créer une nouvelle courbe de valeur, rendant la concurrence actuelle non pertinente.</p>
+                <h6 class="mt-4 text-blue-ocean">Votre Proposition de Valeur Détaillée :</h6>
+                <p><strong>Profil Client :</strong></p>
+                <ul>
+                    <li><strong>Jobs (Tâches) :</strong> ${customerJobs}</li>
+                    <li><strong>Pains (Douleurs) :</strong> ${customerPains}</li>
+                    <li><strong>Gains (Bénéfices) :</strong> ${customerGains}</li>
+                </ul>
+                <p><strong>Votre Proposition de Valeur :</strong></p>
+                <ul>
+                    <li><strong>Produits & Services :</strong> ${valueProductsServices}</li>
+                    <li><strong>Gain Creators (Créateurs de Bénéfices) :</strong> ${valueGainCreators}</li>
+                    <li><strong>Pain Relievers (Atténuateurs de Douleurs) :</strong> ${valuePainRelievers}</li>
+                </ul>
+                <p class="mt-4">En ciblant les non-clients et en offrant cette proposition de valeur unique, vous êtes en bonne voie pour naviguer dans un Océan Bleu.</p>
+            `;
+            simulationResult.style.display = 'block';
+
+            // Mettre à jour le graphique final de la stratégie
+            createOrUpdateFinalStrategyCanvasChart(marketFactorLabels, industryStandardValues, userInnovationValues);
+            updateProgressBar(); // Mettre à jour la barre de progression pour la dernière étape
+        });
+
+        /**
+         * Crée ou met à jour le graphique final de la stratégie (courbe de valeur).
+         * @param {string[]} labels - Les étiquettes des facteurs.
+         * @param {number[]} industryValues - Les données pour la courbe de l'industrie standard.
+         * @param {number[]} innovationValues - Les données pour la courbe de l'innovation de l'utilisateur.
+         */
+        function createOrUpdateFinalStrategyCanvasChart(labels, industryValues, innovationValues) {
+            if (finalStrategyCanvasChart) {
+                finalStrategyCanvasChart.destroy();
+            }
+            finalStrategyCanvasChart = new Chart(finalStrategyCanvasCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Standard de l\'industrie Actuelle',
+                            data: industryValues,
+                            borderColor: getRedOceanColor(),
+                            backgroundColor: 'rgba(234, 67, 53, 0.1)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5,
+                            pointBackgroundColor: getRedOceanColor()
+                        },
+                        {
+                            label: 'Votre Nouvelle Courbe de Valeur',
+                            data: innovationValues,
+                            borderColor: getBlueOceanColor(),
+                            backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5,
+                            pointBackgroundColor: getBlueOceanColor()
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Votre Courbe de Valeur Océan Bleu',
+                            font: { size: 18, weight: 'bold' },
+                            color: getBlueOceanColor()
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: 'Niveau d\'Offre',
+                                font: { size: 14 }
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Facteurs de Valeur',
+                                font: { size: 14 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

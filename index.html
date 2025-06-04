@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprentissage Interactif de la Stratégie Océan Bleu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables CSS pour les couleurs thématiques */
+        :root {
+            --blue-ocean: #007bff; /* Brighter blue for primary actions */
+            --blue-ocean-dark: #0056b3;
+            --red-ocean: #dc3545;
+            --innovation: #28a745; /* Green for success/innovation */
+            --text-color: #343a40; /* Darker text for readability */
+            --light-bg: #f0f2f5; /* Off-white background */
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.08); /* More pronounced shadow */
+            --gradient-start: #6a82fb; /* Light blue/purple for gradient */
+            --gradient-end: #fc5c7d; /* Pink/red for gradient */
+        }
+
+        /* Styles généraux du corps */
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            padding-top: 70px; /* Adjust for fixed navbar height */
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: 0px 4px 10px var(--shadow-color);
+            transition: all 0.3s ease-in-out;
+            padding: 0.8rem 1rem;
+        }
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--blue-ocean) !important;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+        .navbar-brand:hover {
+            color: var(--blue-ocean-dark) !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            padding: 8px 0;
+            position: relative;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            background-color: var(--blue-ocean);
+            left: 0;
+            bottom: -5px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--blue-ocean) !important;
+            transform: translateY(-2px);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: var(--blue-ocean) !important;
+            font-weight: 600;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden; /* For background patterns */
+        }
+
+        section:nth-of-type(odd) {
+            background-color: var(--card-bg);
+        }
+        section:nth-of-type(even) {
+            background-color: var(--light-bg);
+        }
+
+        section h2 {
+            color: var(--blue-ocean-dark);
+            margin-bottom: 60px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        section h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--blue-ocean), var(--innovation)); /* Fixed syntax */
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .card {
+            border: none; /* Remove default border */
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px var(--shadow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card-bg);
+            height: 100%; /* Ensure cards in a row have equal height */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--blue-ocean), var(--blue-ocean-dark));
+            color: white;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            color: var(--blue-ocean-dark);
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .card-title i, .card-title span.emoji {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--blue-ocean);
+            border-color: var(--blue-ocean);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue-ocean-dark);
+            border-color: var(--blue-ocean-dark);
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .btn-outline-primary {
+            color: var(--blue-ocean);
+            border-color: var(--blue-ocean);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--blue-ocean);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-info {
+            background-color: #17a2b8; /* Bootstrap Info color */
+            border-color: #17a2b8;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-info:hover {
+            background-color: #117a8b;
+            border-color: #117a8b;
+            transform: translateY(-1px);
+        }
+        .btn-success {
+            background-color: var(--innovation);
+            border-color: var(--innovation);
+            box-shadow: 0px 4px 10px rgba(40, 167, 69, 0.3);
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #218838;
+            box-shadow: 0px 6px 15px rgba(40, 167, 69, 0.4);
+        }
+        .btn-danger {
+            background-color: var(--red-ocean);
+            border-color: var(--red-ocean);
+            box-shadow: 0px 4px 10px rgba(220, 53, 69, 0.3);
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #c82333;
+            box-shadow: 0px 6px 15px rgba(220, 53, 69, 0.4);
+        }
+
+
+        /* Tabs */
+        .nav-tabs .nav-link {
+            color: var(--text-color);
+            border: none; /* Remove default border */
+            border-bottom: 3px solid transparent;
+            margin-right: 15px;
+            padding: 15px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--blue-ocean);
+            background-color: transparent;
+            border-color: var(--blue-ocean);
+            font-weight: 700;
+        }
+        .nav-tabs .nav-link:hover {
+            color: var(--blue-ocean);
+            border-color: var(--blue-ocean);
+        }
+
+        .tab-content {
+            background-color: var(--card-bg);
+            border: none;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px var(--shadow-color);
+        }
+
+        /* Specific styles for charts */
+        canvas {
+            max-width: 100%;
+            height: auto;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(90deg, var(--blue-ocean-dark), var(--blue-ocean));
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 80px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Custom styles for the simulation */
+        .step-navigation {
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px var(--shadow-color);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .step-content {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            box-shadow: 0px 6px 15px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+        .step-content h3 {
+            color: var(--blue-ocean);
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        .step-content p {
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .factor-value-table th, .factor-value-table td {
+            vertical-align: middle;
+            padding: 10px;
+            font-size: 0.95rem;
+        }
+
+        .factor-value-table input {
+            width: 100px;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            padding: 8px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: var(--blue-ocean);
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        }
+        .form-floating > label {
+            padding: 12px 15px;
+        }
+        .form-select {
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+
+        .list-group-item {
+            border-color: var(--border-color);
+            background-color: transparent;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+        .list-group-flush .list-group-item {
+            border-right: 0;
+            border-left: 0;
+            border-radius: 0;
+        }
+        .list-group-flush .list-group-item:first-child {
+            border-top: 0;
+        }
+
+        /* Custom styling for emoji/text images */
+        .case-study-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 150px; /* Adjust as needed */
+            background-color: var(--light-bg);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 4rem;
+            padding: 15px;
+            color: var(--blue-ocean); /* Default emoji color */
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .case-study-icon.bg-red-ocean { color: var(--red-ocean); }
+        .case-study-icon.bg-blue-ocean { color: var(--blue-ocean); }
+        .case-study-icon.bg-innovation { color: var(--innovation); }
+
+        /* Animation for sections */
+        .animate__animated {
+            visibility: visible; /* Override if hidden by default */
+        }
+        [data-bs-toggle="collapse"] {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--blue-ocean-dark) !important;
+            transition: color 0.3s ease;
+        }
+        [data-bs-toggle="collapse"]:hover {
+            color: var(--blue-ocean) !important;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: var(--blue-ocean-dark) !important;
+            color: white !important;
+        }
+        .accordion-button:not(.collapsed)::after {
+            filter: brightness(0) invert(1); /* Invert arrow color for dark background */
+        }
+        .accordion-button {
+            border-radius: 8px !important;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .accordion-item {
+            border: none;
+            margin-bottom: 10px;
+            background-color: transparent;
+        }
+        .accordion-body {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            padding: 20px;
+            box-shadow: 0px 4px 12px var(--shadow-color);
+        }
+
+        /* Hover effect for accordion */
+        .accordion-button:hover {
+            background-color: var(--blue-ocean) !important;
+            color: white !important;
+        }
+
+        .accordion-button:not(.collapsed):hover {
+            background-color: var(--blue-ocean-dark) !important; /* Keep original dark blue when expanded and hovered */
+        }
+
+        /* Quiz Specific Styles */
+        .quiz-question {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px var(--shadow-color);
+            margin-bottom: 30px;
+        }
+        .quiz-question h4 {
+            color: var(--blue-ocean-dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .form-check-label {
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .form-check-input:checked + .form-check-label {
+            font-weight: 600;
+            color: var(--blue-ocean);
+        }
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .quiz-feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .quiz-results {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px var(--shadow-color);
+            text-align: center;
+        }
+        .quiz-results h3 {
+            color: var(--blue-ocean-dark);
+            margin-bottom: 20px;
+        }
+        .quiz-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--innovation);
+            margin-bottom: 20px;
+        }
+        .quiz-summary p {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-water me-2"></i>Stratégie Océan Bleu
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#introduction">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#concepts">Concepts Clés</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#etapes">Les 12 Étapes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#outils">Outils & Cadres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#avantages">Avantages & Défis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#etudes-cas">Études de Cas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#simulation">Simulation Interactive</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="#quiz">Quiz Interactif</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+
+        <section id="introduction" class="animate__animated animate__fadeIn">
+            <h2 class="text-center">Plongez dans la Stratégie Océan Bleu <br>🌊 Redéfinissez l'Avenir de Votre Marché ! 🌊</h2>
+            <div class="row">
+                <div class="col-md-9 mx-auto">
+                    <p class="lead text-center mb-5">La Stratégie Océan Bleu est une approche révolutionnaire qui vous invite à transcender la concurrence en créant de nouveaux espaces de marché inexplorés. Oubliez la bataille sanglante des "océans rouges" et naviguez vers des opportunités illimitées où la demande est créée, non disputée.</p>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-danger animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+                                <div class="card-header bg-danger text-white"><i class="bi bi-fire me-2"></i>L'Océan Rouge</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center"><span class="emoji" role="img" aria-label="Red Ocean">🦈</span> Combat Acharné</h5>
+                                    <p class="card-text">Imaginez un marché saturé de concurrents, où chaque gain de part de marché se fait au détriment d'un rival. Les marges sont sous pression, l'innovation est incrémentale, et la survie est un défi quotidien. C'est l'océan rouge, où la concurrence teint les eaux de sang.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-primary animate__animated animate__zoomIn" style="animation-delay: 0.4s;">
+                                <div class="card-header bg-primary text-white"><i class="bi bi-water me-2"></i>L'Océan Bleu</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center"><span class="emoji" role="img" aria-label="Blue Ocean">🐬</span> Espaces Vastes et Inexploités</h5>
+                                    <p class="card-text">Partez à la conquête de nouveaux territoires stratégiques, où la demande est latente et la concurrence inexistante. Les océans bleus sont des opportunités de croissance exponentielle, créées en offrant une valeur radicalement nouvelle aux acheteurs et en rendant la concurrence obsolète.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="concepts" class="animate__animated animate__fadeIn">
+            <h2>Concepts Clés pour Créer Votre Océan Bleu</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn">
+                        <div class="card-header"><span class="emoji">💡</span> Innovation de Valeur</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Différenciation & Coûts Faibles</h5>
+                            <p class="card-text">C'est la magie de l'Océan Bleu : offrir un bond de valeur exceptionnel aux clients tout en réduisant simultanément les coûts. Il ne s'agit pas d'un compromis, mais d'une synergie qui ouvre un nouvel espace de marché.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn" style="animation-delay: 0.1s;">
+                        <div class="card-header"><span class="emoji">🛠️</span> Cadre des Quatre Actions</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Éliminer, Réduire, Accroître, Créer (CREE)</h5>
+                            <p class="card-text">Un outil analytique puissant pour repenser votre offre. Questionnez les facteurs sur lesquels votre industrie est basée pour innover et remodeler la valeur perçue par l'acheteur.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+                        <div class="card-header"><span class="emoji">📊</span> Toile Stratégique</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Visualisez Votre Position</h5>
+                            <p class="card-text">Cet outil visuel vous permet de cartographier la performance relative de votre entreprise et de vos concurrents sur les facteurs clés. Il révèle où sont les opportunités de différenciation et de création de valeur.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn" style="animation-delay: 0.3s;">
+                        <div class="card-header"><span class="emoji">🧭</span> Les Six Pistes</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Explorez Au-delà des Frontières</h5>
+                            <p class="card-text">Des chemins méthodiques pour sortir du cadre habituel et découvrir des marchés inexplorés, en analysant les alternatives, les groupes de non-acheteurs, les complémentarités et bien plus encore.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn" style="animation-delay: 0.4s;">
+                        <div class="card-header"><span class="emoji">💰</span> Séquence Stratégique</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Utilité, Prix, Coût, Adoption</h5>
+                            <p class="card-text">Testez la viabilité commerciale de votre idée d'Océan Bleu. Une idée doit être utile pour l'acheteur, avoir un prix accessible, être rentable à produire et facile à adopter pour toutes les parties prenantes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card animate__animated animate__zoomIn" style="animation-delay: 0.5s;">
+                        <div class="card-header"><span class="emoji">🤝</span> Leadership Équitable</div>
+                        <div class="card-body">
+                            <h5 class="card-title">L'Art de l'Adhésion</h5>
+                            <p class="card-text">La clé de la mise en œuvre réussie. Impliquez vos équipes par la clarté, l'engagement et l'explication des décisions, créant ainsi confiance et coopération.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="etapes" class="animate__animated animate__fadeIn">
+            <h2>Les 12 Étapes Clés de la Stratégie Océan Bleu</h2>
+            <div class="accordion" id="blueOceanStepsAccordion">
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0s;">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <span class="emoji me-2">🗺️</span> 1. Redéfinir les Frontières du Marché
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Élargissez votre vision au-delà de l'industrie actuelle. Examinez les industries alternatives, les groupes stratégiques, les chaînes d'acheteurs, les produits et services complémentaires, les tendances externes, et l'orientation fonctionnelle/émotionnelle de l'industrie.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Les Six Pistes de Recherche, Analyse des 5 Forces de Porter (pour contextualiser l'océan rouge).</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Comprendre les limites de l'océan rouge et identifier les espaces inexplorés pour la croissance.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <span class="emoji me-2">📈</span> 2. Dessiner la Toile Stratégique Actuelle
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Représentez visuellement la performance des acteurs clés de votre industrie par rapport aux facteurs de concurrence dominants. Cela révèle les similitudes et les points de bataille.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Toile Stratégique.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Avoir une compréhension claire du paysage concurrentiel de l'océan rouge, des points forts et faibles partagés par l'industrie.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <span class="emoji me-2">👥</span> 3. Examiner les Acheteurs et les Non-Acheteurs
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Plongez dans les raisons pour lesquelles certains ne sont pas clients (non-acheteurs de première, deuxième et troisième strate) pour découvrir des besoins non satisfaits et des opportunités massives.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Cartographie des groupes de non-acheteurs, entretiens qualitatifs, observations de marché.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Identifier les segments de non-clients et comprendre les freins qui les empêchent d'accéder aux offres existantes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <span class="emoji me-2">✂️➕</span> 4. Appliquer le Cadre des Quatre Actions (CREE)
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Utilisez les questions d'Éliminer, Réduire, Accroître, Créer pour remettre en question les facteurs de valeur traditionnels et construire une nouvelle courbe de valeur disruptive.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Cadre des Quatre Actions (CREE).</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Innover simultanément sur la valeur et le coût en redéfinissant les éléments fondamentaux de l'offre.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                    <h2 class="accordion-header" id="headingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            <span class="emoji me-2">✨</span> 5. Dessiner la Nouvelle Toile Stratégique
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Visualisez la nouvelle courbe de valeur que vous avez conçue. Comparez-la à la toile stratégique de l'océan rouge pour s'assurer de sa divergence, de sa focalisation et de son message clair.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Toile Stratégique (post-CREE).</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Confirmer que votre nouvelle proposition de valeur est distinctive, porteuse de sens et génère un océan bleu.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+                    <h2 class="accordion-header" id="headingSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                            <span class="emoji me-2">✅</span> 6. Tester la Séquence Stratégique (Utilité, Prix, Coût, Adoption)
+                        </button>
+                    </h2>
+                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Évaluez la viabilité commerciale de votre idée en vous assurant qu'elle offre une utilité exceptionnelle, est accessible en termes de prix, peut être produite à un coût rentable, et que son adoption est assurée.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Matrice Utilité-Prix-Coût-Adoption, études de marché, analyse des coûts.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> S'assurer que l'idée d'océan bleu est non seulement innovante mais aussi durablement profitable et réalisable.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+                    <h2 class="accordion-header" id="headingSeven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                            <span class="emoji me-2">🚧</span> 7. Surmonter les Obstacles Organisationnels
+                        </button>
+                    </h2>
+                    <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Identifiez et préparez-vous à gérer les quatre obstacles clés à l'exécution : les obstacles cognitifs (manque de compréhension), de ressources, de motivation et politiques.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Leadership à point de bascule (Tipping Point Leadership), Fair Process.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Débloquer les résistances internes et aligner l'organisation pour la mise en œuvre de la nouvelle stratégie.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.7s;">
+                    <h2 class="accordion-header" id="headingEight">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            <span class="emoji me-2">🔗</span> 8. Intégrer l'Exécution et la Stratégie
+                        </button>
+                    </h2>
+                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Fusionnez le processus de formulation de la stratégie avec celui de l'exécution. La stratégie n'est pas seulement un plan, c'est aussi le moyen de le réaliser.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Cadres d'alignement stratégique, KPIs partagés, revues régulières.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Éviter le fossé entre la conception et la réalisation, et garantir l'engagement de tous les niveaux hiérarchiques.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+                    <h2 class="accordion-header" id="headingNine">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                            <span class="emoji me-2">🌐</span> 9. Reconstruire Continuellement les Frontières
+                        </button>
+                    </h2>
+                    <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Ne considérez pas la création d'un océan bleu comme un événement unique. Adoptez une mentalité d'exploration continue pour identifier de nouvelles opportunités de marché.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Grille des Six Pistes (application continue), Veille stratégique.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Maintenir un avantage concurrentiel durable en étant constamment à la recherche de nouveaux océans bleus.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 0.9s;">
+                    <h2 class="accordion-header" id="headingTen">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                            <span class="emoji me-2">🎁</span> 10. Développer une Offre Stratégique de Valeur
+                        </button>
+                    </h2>
+                    <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Concrétisez votre vision en une offre irrésistible qui résonne avec les besoins non satisfaits des non-acheteurs. C'est votre proposition de valeur unique.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Canevas de proposition de valeur, Prototypage rapide.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Créer une solution qui offre un saut de valeur clair et distinctif pour le nouveau marché que vous visez.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 1.0s;">
+                    <h2 class="accordion-header" id="headingEleven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                            <span class="emoji me-2">💲</span> 11. Établir le Prix Stratégique
+                        </button>
+                    </h2>
+                    <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Définissez un prix qui non seulement attire la masse des acheteurs potentiels, mais assure également la rentabilité nécessaire pour soutenir votre modèle économique.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Analyse du prix psychologique, Comparaison des prix des substituts, Optimisation du prix.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Positionner votre offre pour capturer la demande de masse tout en garantissant des marges saines.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item animate__animated animate__fadeInUp" style="animation-delay: 1.1s;">
+                    <h2 class="accordion-header" id="headingTwelve">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                            <span class="emoji me-2">🚀</span> 12. Lancer et Déployer la Stratégie Océan Bleu
+                        </button>
+                    </h2>
+                    <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve" data-bs-parent="#blueOceanStepsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Description :</strong> Mettez en œuvre votre stratégie avec un plan d'action détaillé, une communication claire et un suivi rigoureux des indicateurs de performance. Soyez prêt à itérer.</p>
+                            <p class="mb-1"><strong>Outil :</strong> Plans de projet détaillés, KPIs, Boucles de feedback et d'ajustement rapide.</p>
+                            <p class="mb-0"><strong>Objectif :</strong> Réaliser le potentiel de votre océan bleu, assurer un déploiement fluide et s'adapter aux réalités du marché.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="outils" class="animate__animated animate__fadeIn">
+            <h2>Boîte à Outils pour Votre Stratégie Océan Bleu</h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__zoomIn">
+                        <div class="card-header bg-primary text-white"><i class="bi bi-bar-chart me-2"></i>La Toile Stratégique</div>
+                        <div class="card-body">
+                            <h5 class="card-title">🔬 Analysez Votre Position</h5>
+                            <p class="card-text">Un diagnostic visuel indispensable qui cartographie la performance relative d'une entreprise et de ses concurrents sur les facteurs clés de concurrence. Elle met en lumière les points de différenciation et les opportunités de réduction des coûts.</p>
+                            <div class="text-center mt-3 fs-1 text-primary"><span class="emoji" role="img" aria-label="Chart">📈</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__zoomIn" style="animation-delay: 0.1s;">
+                        <div class="card-header bg-success text-white"><i class="bi bi-grid-3x3-gap me-2"></i>Le Cadre des Quatre Actions (CREE)</div>
+                        <div class="card-body">
+                            <h5 class="card-title">💡 Transformez Votre Offre</h5>
+                            <p class="card-text">Un outil puissant pour innover la valeur en remettant en question les normes de l'industrie. Il vous guide à travers quatre questions fondamentales pour remodeler la proposition de valeur.</p>
+                            <ul class="list-group list-group-flush mt-3">
+                                <li class="list-group-item"><i class="bi bi-dash-circle-fill text-danger me-2"></i><strong>Éliminer :</strong> Ce qui est coûteux et sans valeur.</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-down-circle-fill text-warning me-2"></i><strong>Réduire :</strong> Ce qui est sur-investi sans retour.</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-up-circle-fill text-success me-2"></i><strong>Accroître :</strong> Ce qui crée de la valeur.</li>
+                                <li class="list-group-item"><i class="bi bi-plus-circle-fill text-info me-2"></i><strong>Créer :</strong> Ce qui n'a jamais été offert.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+                        <div class="card-header bg-info text-white"><i class="bi bi-map me-2"></i>Les Six Pistes de Recherche</div>
+                        <div class="card-body">
+                            <h5 class="card-title">🌍 Élargissez Votre Horizon</h5>
+                            <p class="card-text">Des pistes systématiques pour explorer au-delà des définitions de marché existantes et découvrir des opportunités de création de nouveaux marchés.</p>
+                            <ol class="list-group list-group-flush mt-3">
+                                <li class="list-group-item"><i class="bi bi-arrow-right-circle-fill text-info me-2"></i>Industries alternatives</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-right-circle-fill text-info me-2"></i>Groupes stratégiques</li>
+                                <li class="list-group-item"><i class="list-group-item-text me-2"></i>Groupes d'acheteurs</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-right-circle-fill text-info me-2"></i>Produits/services complémentaires</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-right-circle-fill text-info me-2"></i>Orientation fonctionnelle/émotionnelle</li>
+                                <li class="list-group-item"><i class="bi bi-arrow-right-circle-fill text-info me-2"></i>Tendances externes</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__zoomIn" style="animation-delay: 0.3s;">
+                        <div class="card-header bg-warning text-dark"><i class="bi bi-clipboard-check me-2"></i>La Séquence Stratégique</div>
+                        <div class="card-body">
+                            <h5 class="card-title">✔️ Validez Votre Modèle</h5>
+                            <p class="card-text">Une séquence d'évaluation pour garantir la viabilité commerciale de votre idée d'Océan Bleu avant de la lancer.</p>
+                            <ul class="list-group list-group-flush mt-3">
+                                <li class="list-group-item"><i class="bi bi-star-fill text-warning me-2"></i><strong>Utilité :</strong> Est-ce que ça apporte une valeur exceptionnelle ?</li>
+                                <li class="list-group-item"><i class="bi bi-currency-dollar text-warning me-2"></i><strong>Prix :</strong> Est-ce accessible à la masse ?</li>
+                                <li class="list-group-item"><i class="bi bi-gear-fill text-warning me-2"></i><strong>Coût :</strong> Est-ce rentable à produire ?</li>
+                                <li class="list-group-item"><i class="bi bi-people-fill text-warning me-2"></i><strong>Adoption :</strong> Les parties prenantes vont-elles l'accepter ?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="avantages" class="animate__animated animate__fadeIn">
+            <h2>Avantages & Défis : Le Chemin vers l'Océan Bleu</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 animate__animated animate__fadeInLeft">
+                        <div class="card-header bg-success text-white"><i class="bi bi-check-circle me-2"></i>Les Avantages : Pourquoi Oser ?</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><i class="bi bi-lightbulb-fill text-success me-2"></i>Création de nouveaux marchés inexploités.</li>
+                                <li class="list-group-item"><i class="bi bi-shield-fill-check text-success me-2"></i>Réduction significative, voire élimination, de la concurrence.</li>
+                                <li class="list-group-item"><i class="bi bi-graph-up-arrow text-success me-2"></i>Potentiel de croissance rapide et de marges élevées.</li>
+                                <li class="list-group-item"><i class="bi bi-star-fill text-success me-2"></i>Positionnement en tant qu'innovateur et leader du marché.</li>
+                                <li class="list-group-item"><i class="bi bi-puzzle-fill text-success me-2"></i>Alignement stratégique fort et motivation des équipes.</li>
+                                <li class="list-group-item"><i class="bi bi-hand-thumbs-up-fill text-success me-2"></i>Renforcement de la fidélité client par une valeur unique.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 animate__animated animate__fadeInRight">
+                        <div class="card-header bg-danger text-white"><i class="bi bi-x-circle me-2"></i>Les Défis : Ce Qu'il Faut Anticiper</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Nécessite un changement culturel profond au sein de l'organisation.</li>
+                                <li class="list-group-item"><i class="bi bi-bug-fill text-danger me-2"></i>Risque inhérent à l'exploration de l'inconnu et à l'incertitude du marché.</li>
+                                <li class="list-group-item"><i class="bi bi-person-fill-exclamation text-danger me-2"></i>Difficulté à surmonter les résistances internes et les intérêts acquis.</li>
+                                <li class="list-group-item"><i class="bi bi-search-heart-fill text-danger me-2"></i>Exige une recherche approfondie des non-acheteurs et de leurs besoins.</li>
+                                <li class="list-group-item"><i class="bi bi-diagram-3-fill text-danger me-2"></i>Demande une intégration sans faille entre la stratégie et l'exécution.</li>
+                                <li class="list-group-item"><i class="bi bi-layers-fill text-danger me-2"></i>Vulnérabilité à l'imitation par les concurrents à long terme.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="etudes-cas" class="animate__animated animate__fadeIn">
+            <h2>Études de Cas : Des Océans Bleus Qui ont Changé le Monde</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp">
+                        <div class="case-study-icon bg-info"><span class="emoji">🚕</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Uber</h5>
+                            <p class="card-text">A créé un nouveau marché pour le transport individuel en éliminant les tracas du taxi (attente, paiement en espèces) et en offrant commodité, rapidité et transparence via une application mobile.</p>
+                            <span class="badge bg-info">Transport / Services</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                        <div class="case-study-icon bg-success"><span class="emoji">🏠</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Airbnb</h5>
+                            <p class="card-text">A ouvert le marché de l'hébergement pour les voyageurs en quête d'expériences locales et d'authenticité, en transformant des chambres et logements privés en alternatives aux hôtels coûteux.</p>
+                            <span class="badge bg-success">Hébergement / Tourisme</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                        <div class="case-study-icon bg-warning text-dark"><span class="emoji">📱</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">M-Pesa (Kenya)</h5>
+                            <p class="card-text">A révolutionné les services financiers en Afrique en permettant aux citoyens non bancarisés d'envoyer et de recevoir de l'argent via leur téléphone mobile, créant un nouveau marché de transferts monétaires.</p>
+                            <span class="badge bg-warning text-dark">Services Financiers</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                        <div class="case-study-icon bg-primary"><span class="emoji">🎪</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Cirque du Soleil</h5>
+                            <p class="card-text">A réinventé le cirque en fusionnant le meilleur du théâtre, de l'opéra et de l'art de la rue, tout en éliminant les coûts liés aux animaux et aux têtes d'affiche.</p>
+                            <span class="badge bg-primary">Divertissement</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                        <div class="case-study-icon bg-danger"><span class="emoji">🍽️</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Fast Casual Restaurants (Ex: Chipotle)</h5>
+                            <p class="card-text">A créé un segment hybride entre la restauration rapide et les restaurants assis, offrant des repas de qualité supérieure, personnalisables, préparés rapidement, à un prix abordable.</p>
+                            <span class="badge bg-danger">Restauration</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+                        <div class="case-study-icon bg-secondary"><span class="emoji">📺</span></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Netflix (modèle initial)</h5>
+                            <p class="card-text">A créé un océan bleu dans la location de vidéos en éliminant les frais de retard et les dates limites, offrant un vaste catalogue par abonnement mensuel.</p>
+                            <span class="badge bg-secondary">Divertissement Numérique</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulation" class="animate__animated animate__fadeIn">
+            <h2 class="text-center">Lancez Votre Propre Simulation Océan Bleu ! <br>🎯 Créez Votre Stratégie Disruptive 🎯</h2>
+            <p class="lead text-center mb-5">Suivez les étapes clés pour concevoir une nouvelle courbe de valeur et visualiser le potentiel de votre océan bleu.</p>
+
+            <div class="row mb-4">
+                <div class="col-md-7 mx-auto">
+                    <div class="card p-3 shadow-sm">
+                        <label for="industrySelect" class="form-label mb-3 fs-5 text-primary">Choisissez une industrie à transformer :</label>
+                        <select class="form-select form-select-lg" id="industrySelect">
+                            <option value="cinema">Cinéma</option>
+                            <option value="fitness">Fitness</option>
+                            <option value="cafe">Café</option>
+                            <option value="education">Éducation</option>
+                            <option value="music">Musique</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-navigation d-flex justify-content-between align-items-center mb-4">
+                <button class="btn btn-outline-primary btn-lg" id="prevStepBtn" disabled><i class="bi bi-arrow-left me-2"></i> Précédent</button>
+                <h4 id="currentStepTitle" class="text-center mb-0 text-dark">Étape 1: Établir la Toile Stratégique de l'Océan Rouge</h4>
+                <button class="btn btn-primary btn-lg" id="nextStepBtn">Suivant <i class="bi bi-arrow-right ms-2"></i></button>
+            </div>
+
+            <div class="step-content p-4">
+                <div id="step1" class="simulation-step active">
+                    <h3>1. Établir la Toile Stratégique de l'Océan Rouge <span class="emoji">🔴</span></h3>
+                    <p class="text-center">Définissez l'importance des facteurs de concurrence pour l'industrie actuelle sur une échelle de <span class="badge bg-danger">0 (peu important)</span> à <span class="badge bg-success">10 (très important)</span>.</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle factor-value-table">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Facteur de Concurrence</th>
+                                    <th>Valeur (0-10)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="redOceanFactorsTbody">
+                                </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-info btn-lg" id="drawRedOceanChartBtn"><i class="bi bi-bar-chart-line me-2"></i> Dessiner la Toile Stratégique</button>
+                    </div>
+                    <canvas id="simulationChart1" style="display:none;"></canvas>
+                </div>
+
+                <div id="step2" class="simulation-step d-none">
+                    <h3>2. Appliquer le Cadre des Quatre Actions (CREE) <span class="emoji">💡</span></h3>
+                    <p class="text-center">Libérez votre créativité ! Quels facteurs allez-vous Éliminer, Réduire, Accroître ou Créer pour une offre unique ?</p>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-light-danger border-danger">
+                                <div class="card-header bg-danger text-white"><span class="emoji me-2">❌</span> Éliminer</div>
+                                <div class="card-body">
+                                    <p class="card-text">Quels facteurs coûteux ou obsolètes, que l'industrie tient pour acquis, faut-il <strong>Éliminer</strong> complètement ?</p>
+                                    <textarea class="form-control" id="eliminateFactors" rows="4" placeholder="Ex: Frais de retard, Animaux dans un cirque, Coût du coaching personnel..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-light-warning border-warning">
+                                <div class="card-header bg-warning text-dark"><span class="emoji me-2">📉</span> Réduire</div>
+                                <div class="card-body">
+                                    <p class="card-text">Quels facteurs devraient être <strong>Réduits</strong> bien en dessous des normes de votre industrie, car ils sont sur-investis ?</p>
+                                    <textarea class="form-control" id="reduceFactors" rows="4" placeholder="Ex: Publicité massive, Variété des saveurs, Complexité des menus..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-light-success border-success">
+                                <div class="card-header bg-success text-white"><span class="emoji me-2">📈</span> Accroître</div>
+                                <div class="card-body">
+                                    <p class="card-text">Quels facteurs devraient être <strong>Accrus</strong> bien au-delà des standards de votre industrie, car ils apportent une grande valeur ?</p>
+                                    <textarea class="form-control" id="increaseFactors" rows="4" placeholder="Ex: Qualité de l'expérience, Confort des sièges, Rapidité de résolution des problèmes..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-light-info border-info">
+                                <div class="card-header bg-info text-white"><span class="emoji me-2">🆕</span> Créer</div>
+                                <div class="card-body">
+                                    <p class="card-text">Quels facteurs entièrement nouveaux, que le secteur n'a jamais offerts, faut-il <strong>Créer</strong> pour débloquer une nouvelle demande ?</p>
+                                    <textarea class="form-control" id="createFactors" rows="4" placeholder="Ex: Gamification de l'apprentissage, Communauté d'utilisateurs, Expériences immersives VR..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step3" class="simulation-step d-none">
+                    <h3>3. Concevoir la Nouvelle Toile Stratégique <span class="emoji">🔵</span></h3>
+                    <p class="text-center">Ajustez les valeurs des facteurs pour votre nouvelle stratégie. Assurez-vous qu'elle est <span class="text-primary fw-bold">Focalisée</span>, <span class="text-success fw-bold">Divergente</span> et dotée d'un <span class="text-info fw-bold">Message percutant</span>.</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle factor-value-table">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Facteur Transformé</th>
+                                    <th>Nouvelle Valeur (0-10)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="newStrategyFactorsTbody">
+                                </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-info btn-lg" id="drawBlueOceanChartBtn"><i class="bi bi-graph-up me-2"></i> Comparer les Toiles Stratégiques</button>
+                    </div>
+                    <canvas id="simulationChart2" style="display:none;"></canvas>
+                </div>
+
+                <div id="step4" class="simulation-step d-none">
+                    <h3>4. Évaluer l'Innovation de Valeur <span class="emoji">💎</span></h3>
+                    <p class="text-center">Votre nouvelle toile stratégique incarne-t-elle les principes de l'innovation de valeur ?</p>
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="valuePropositionSlogan" placeholder="Votre slogan de proposition de valeur">
+                        <label for="valuePropositionSlogan"><i class="bi bi-chat-dots me-2"></i>Votre Slogan de Proposition de Valeur Unique</label>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-3 text-center">
+                                <i class="bi bi-bullseye fs-1 text-primary mb-2"></i>
+                                <h5>Focalisation</h5>
+                                <p>Votre stratégie est-elle clairement définie, sans dispersion des efforts ?</p>
+                                <div class="form-check form-check-inline mt-auto">
+                                    <input class="form-check-input" type="checkbox" id="focusCheck">
+                                    <label class="form-check-label" for="focusCheck">Oui, la stratégie est focalisée.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 p-3 text-center">
+                                <i class="bi bi-shuffle fs-1 text-success mb-2"></i>
+                                <h5>Divergence</h5>
+                                <p>Votre courbe de valeur se démarque-t-elle significativement de celle des concurrents ?</p>
+                                <div class="form-check form-check-inline mt-auto">
+                                    <input class="form-check-input" type="checkbox" id="divergenceCheck">
+                                    <label class="form-check-label" for="divergenceCheck">Oui, elle est divergente.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 p-3 text-center">
+                                <i class="bi bi-megaphone-fill fs-1 text-info mb-2"></i>
+                                <h5>Message Percutant</h5>
+                                <p>Est-elle facilement communicable par un slogan simple et mémorable ?</p>
+                                <div class="form-check form-check-inline mt-auto">
+                                    <input class="form-check-input" type="checkbox" id="compellingMessageCheck">
+                                    <label class="form-check-label" for="compellingMessageCheck">Oui, le message est percutant.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step5" class="simulation-step d-none">
+                    <h3>5. Tester la Séquence Stratégique : Utilité <span class="emoji">🌟</span></h3>
+                    <p class="text-center">Votre offre procure-t-elle une utilité exceptionnelle aux acheteurs, en résolvant leurs frustrations ou en créant de nouvelles expériences ?</p>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="utilityAssessment" placeholder="Évaluez l'utilité pour l'acheteur" rows="6"></textarea>
+                        <label for="utilityAssessment"><i class="bi bi-bookmark-star-fill me-2"></i>Évaluation de l'utilité (Productivité, Simplicité, Commodité, Risque, Fun/Image, Impact Environnemental)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="highUtilityCheck">
+                        <label class="form-check-label ms-2" for="highUtilityCheck">L'utilité pour l'acheteur est-elle exceptionnelle et crée-t-elle une raison impérieuse d'acheter ?</label>
+                    </div>
+                </div>
+
+                <div id="step6" class="simulation-step d-none">
+                    <h3>6. Tester la Séquence Stratégique : Prix <span class="emoji">💲</span></h3>
+                    <p class="text-center">Votre prix est-il stratégiquement fixé pour attirer la masse des acheteurs cibles et permettre une adoption rapide ?</p>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="targetPrice" placeholder="Prix cible estimé" min="0">
+                        <label for="targetPrice"><i class="bi bi-cash-stack me-2"></i>Prix Cible Estimé (pour la masse)</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="priceJustification" placeholder="Justifiez votre prix" rows="4"></textarea>
+                        <label for="priceJustification"><i class="bi bi-wallet-fill me-2"></i>Justification du prix (par rapport aux substituts, aux non-acheteurs)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="strategicPriceCheck">
+                        <label class="form-check-label ms-2" for="strategicPriceCheck">Le prix est-il stratégique et accessible à la masse des acheteurs cibles ?</label>
+                    </div>
+                </div>
+
+                <div id="step7" class="simulation-step d-none">
+                    <h3>7. Tester la Séquence Stratégique : Coût <span class="emoji">💸</span></h3>
+                    <p class="text-center">Pouvez-vous atteindre votre coût cible et générer un profit à votre prix stratégique ? La rentabilité est essentielle.</p>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="targetCost" placeholder="Coût cible estimé" min="0">
+                        <label for="targetCost"><i class="bi bi-tag-fill me-2"></i>Coût Cible Estimé (pour une rentabilité saine)</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="costJustification" placeholder="Décrivez votre structure de coûts" rows="4"></textarea>
+                        <label for="costJustification"><i class="bi bi-piggy-bank-fill me-2"></i>Stratégies pour atteindre le coût cible (innovation de processus, partenariats...)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="costFeasibleCheck">
+                        <label class="form-check-label ms-2" for="costFeasibleCheck">Le coût cible est-il réalisable tout en assurant une marge suffisante ?</label>
+                    </div>
+                </div>
+
+                <div id="step8" class="simulation-step d-none">
+                    <h3>8. Tester la Séquence Stratégique : Adoption <span class="emoji">🤝</span></h3>
+                    <p class="text-center">Quels sont les obstacles potentiels à l'adoption par les parties prenantes clés (employés, partenaires, public), et comment comptez-vous les surmonter ?</p>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="adoptionObstacles" placeholder="Obstacles identifiés" rows="3"></textarea>
+                        <label for="adoptionObstacles"><i class="bi bi-exclamation-octagon-fill me-2"></i>Obstacles à l'adoption (résistance au changement, habitudes...)</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="adoptionStrategies" placeholder="Stratégies pour surmonter les obstacles" rows="4"></textarea>
+                        <label for="adoptionStrategies"><i class="bi bi-lightbulb-fill me-2"></i>Stratégies pour surmonter ces obstacles (communication, incitations...)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="adoptionAssuredCheck">
+                        <label class="form-check-label ms-2" for="adoptionAssuredCheck">L'adoption est-elle assurée ou des plans clairs sont-ils en place pour la faciliter ?</label>
+                    </div>
+                </div>
+
+                <div id="step9" class="simulation-step d-none">
+                    <h3>9. Surmonter les Obstacles Organisationnels : Perception <span class="emoji">🧠</span></h3>
+                    <p class="text-center">Comment allez-vous briser le statu quo perceptif et faire en sorte que chacun voie la nécessité et l'opportunité du changement ?</p>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="cognitiveHurdleStrategy" placeholder="Stratégies pour briser le statu quo perceptif" rows="5"></textarea>
+                        <label for="cognitiveHurdleStrategy"><i class="bi bi-eye-fill me-2"></i>Stratégies (ex: "voir c'est croire", confrontation directe avec les réalités du marché)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="cognitiveHurdleCheck">
+                        <label class="form-check-label ms-2" for="cognitiveHurdleCheck">Les obstacles perceptifs au changement sont-ils activement adressés ?</label>
+                    </div>
+                </div>
+
+                <div id="step10" class="simulation-step d-none">
+                    <h3>10. Surmonter les Obstacles Organisationnels : Ressources Limitées <span class="emoji">💰</span></h3>
+                    <p class="text-center">Comment allez-vous maximiser l'utilisation des ressources existantes et libérer des fonds pour investir dans votre nouvelle stratégie océan bleu ?</p>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="resourceHurdleStrategy" placeholder="Stratégies pour maximiser les ressources" rows="5"></textarea>
+                        <label for="resourceHurdleStrategy"><i class="bi bi-box-seam-fill me-2"></i>Stratégies (ex: identifier les "hotspots" et "coldspots", troc de ressources, alliances stratégiques)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="resourceHurdleCheck">
+                        <label class="form-check-label ms-2" for="resourceHurdleCheck">Les contraintes de ressources sont-elles gérées de manière innovante ?</label>
+                    </div>
+                </div>
+
+                <div id="step11" class="simulation-step d-none">
+                    <h3>11. Surmonter les Obstacles Organisationnels : Motivation <span class="emoji">💪</span></h3>
+                    <p class="text-center">Comment allez-vous motiver les acteurs clés et les masses à adhérer et à s'investir pleinement dans la mise en œuvre de la nouvelle stratégie ?</p>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="motivationalHurdleStrategy" placeholder="Stratégies de motivation" rows="5"></textarea>
+                        <label for="motivationalHurdleStrategy"><i class="bi bi-people-fill me-2"></i>Stratégies (ex: amplifier les réussites, responsabiliser les "anges", leadership équitable)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="motivationalHurdleCheck">
+                        <label class="form-check-label ms-2" for="motivationalHurdleCheck">La motivation des équipes et des leaders est-elle assurée pour le changement ?</label>
+                    </div>
+                </div>
+
+                <div id="step12" class="simulation-step d-none">
+                    <h3>12. Surmonter les Obstacles Organisationnels : Politique <span class="emoji">🏛️</span></h3>
+                    <p class="text-center">Comment allez-vous identifier, neutraliser ou rallier les opposants potentiels internes et externes qui pourraient freiner l'adoption de votre stratégie ?</p>
+                    <div class="form-floating mb-4">
+                        <textarea class="form-control" id="politicalHurdleStrategy" placeholder="Stratégies pour gérer la politique interne" rows="5"></textarea>
+                        <label for="politicalHurdleStrategy"><i class="bi bi-hand-index-thumb-fill me-2"></i>Stratégies (ex: isoler les "démons", créer des coalitions, impliquer les parties prenantes clés)</label>
+                    </div>
+                    <div class="form-check form-switch fs-5 p-3 rounded bg-light">
+                        <input class="form-check-input" type="checkbox" role="switch" id="politicalHurdleCheck">
+                        <label class="form-check-label ms-2" for="politicalHurdleCheck">Les obstacles politiques sont-ils gérés de manière proactive ?</label>
+                    </div>
+                </div>
+
+                <div id="step13" class="simulation-step d-none text-center">
+                    <h3>Félicitations ! Votre Stratégie Océan Bleu est Prête ! <span class="emoji">🎉</span></h3>
+                    <p class="lead">Vous avez brillamment parcouru toutes les étapes pour concevoir une stratégie disruptive et innovante.</p>
+                    <p class="mb-4">Votre objectif était de créer une proposition de valeur qui <strong>Élimine</strong>, <strong>Réduit</strong>, <strong>Accroît</strong> et <strong>Crée</strong> des facteurs pour offrir une valeur unique à un nouveau segment de marché. La réussite dépendra de l'exécution et de votre capacité à rester agile.</p>
+                    <div class="alert alert-success fs-4 p-4 rounded-3 animate__animated animate__pulse animate__infinite">
+                        <i class="bi bi-trophy-fill me-3"></i> Vous avez le potentiel de transformer votre industrie !
+                    </div>
+                    <div class="mt-5">
+                        <button class="btn btn-success btn-lg me-3" id="finalReviewBtn"><i class="bi bi-star-fill me-2"></i> Revoir les Concepts Clés</button>
+                        <button class="btn btn-danger btn-lg" id="resetSimulationBtn"><i class="bi bi-arrow-counterclockwise me-2"></i> Recommencer la Simulation</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="quiz" class="animate__animated animate__fadeIn">
+            <h2 class="text-center">Testez Vos Connaissances ! <br>🧠 Quiz Interactif sur la Stratégie Océan Bleu 🧠</h2>
+            <p class="lead text-center mb-5">Vérifiez votre compréhension des concepts clés en répondant à ce quiz.</p>
+
+            <div id="quizContainer">
+                </div>
+
+            <div class="text-center mt-5">
+                <button class="btn btn-primary btn-lg" id="submitQuizBtn">Soumettre le Quiz</button>
+                <button class="btn btn-outline-secondary btn-lg ms-3 d-none" id="retryQuizBtn">Réessayer le Quiz</button>
+            </div>
+
+            <div id="quizResults" class="quiz-results d-none mt-5">
+                <h3>Vos Résultats du Quiz</h3>
+                <div class="quiz-score" id="scoreDisplay"></div>
+                <div class="quiz-summary" id="summaryDisplay"></div>
+                <button class="btn btn-success btn-lg mt-4" id="reviewAnswersBtn" style="display:none;">Revoir mes Réponses</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 Stratégie Océan Bleu. Tous droits réservés. | <a href="#" class="text-white">Politique de Confidentialité</a></p>
+            <p class="mb-0">Conçu avec passion pour l'apprentissage interactif. <i class="bi bi-heart-fill text-danger"></i></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        const industryData = {
+            cinema: {
+                name: "Cinéma",
+                redOceanFactors: {
+                    "Coût du billet": 8,
+                    "Qualité du son et de l'image": 9,
+                    "Confort des sièges": 7,
+                    "Variété des films": 8,
+                    "Expérience immersive": 8,
+                    "Popcorn et snacks chers": 6,
+                    "Stationnement et accès": 5,
+                    "Propreté des salles": 7
+                },
+                blueOceanExample: {
+                    eliminate: ["Coût élevé du billet", "Temps d'attente"],
+                    reduce: ["Variété des films", "Popcorn et snacks chers"],
+                    increase: ["Confort des sièges", "Expérience immersive", "Interactivité"],
+                    create: ["Événements spéciaux", "Contenu personnalisé", "Atmosphère unique"]
+                }
+            },
+            fitness: {
+                name: "Clubs de Fitness Traditionnels",
+                redOceanFactors: {
+                    "Coût de l'abonnement": 7,
+                    "Variété des équipements": 8,
+                    "Nombre de cours collectifs": 7,
+                    "Coaching personnalisé": 5,
+                    "Hygiène des locaux": 7,
+                    "Localisation centrale": 6,
+                    "Ambiance compétitive": 6,
+                    "Engagement à long terme": 8
+                },
+                blueOceanExample: {
+                    eliminate: ["Coût élevé de l'abonnement", "Ambiance compétitive"],
+                    reduce: ["Variété des équipements", "Nombre de cours collectifs"],
+                    increase: ["Coaching personnalisé", "Flexibilité (sans engagement)", "Communauté de soutien"],
+                    create: ["Programmes holistiques (nutrition, bien-être mental)", "Activités en extérieur", "Gamification et défis"]
+                }
+            },
+            cafe: {
+                name: "Cafés Traditionnels",
+                redOceanFactors: {
+                    "Qualité du café": 8,
+                    "Prix des boissons": 7,
+                    "Variété des pâtisseries": 6,
+                    "Ambiance générale": 7,
+                    "Confort des sièges": 6,
+                    "Rapidité du service": 7,
+                    "Wi-Fi gratuit": 5,
+                    "Localisation": 8
+                },
+                blueOceanExample: {
+                    eliminate: ["Prix des boissons élevés", "Ambiance bruyante"],
+                    reduce: ["Variété des pâtisseries", "Rapidité du service (pour favoriser la détente)"],
+                    increase: ["Qualité du café de spécialité", "Confort des sièges", "Espaces de co-working/création"],
+                    create: ["Ateliers (latte art, dégustation)", "Musique live acoustique", "Produits artisanaux locaux"]
+                }
+            },
+            education: {
+                name: "Éducation Supérieure Traditionnelle",
+                redOceanFactors: {
+                    "Coût des frais de scolarité": 9,
+                    "Réputation de l'institution": 8,
+                    "Accréditation et diplômes": 9,
+                    "Taille des classes": 6,
+                    "Flexibilité des horaires": 4,
+                    "Accès aux professeurs": 6,
+                    "Réseautage professionnel": 7,
+                    "Contenu théorique": 8
+                },
+                blueOceanExample: {
+                    eliminate: ["Coût élevé des frais", "Taille des classes rigides"],
+                    reduce: ["Contenu théorique pur", "Dépendance à la localisation physique"],
+                    increase: ["Flexibilité des horaires", "Mentorat personnalisé", "Compétences pratiques"],
+                    create: ["Apprentissage basé sur des projets réels", "Micro-certifications", "Communautés d'apprentissage en ligne"]
+                }
+            },
+            music: {
+                name: "Industrie Musicale Traditionnelle",
+                redOceanFactors: {
+                    "Coût de production musicale": 7,
+                    "Distribution physique (CD/Vinyles)": 6,
+                    "Contrôle des labels sur les artistes": 8,
+                    "Revenus artistes par vente": 4,
+                    "Marketing de masse": 7,
+                    "Concerts physiques": 8,
+                    "Découverte de nouveaux talents": 6,
+                    "Protection du droit d'auteur": 7
+                },
+                blueOceanExample: {
+                    eliminate: ["Coûts de distribution physique élevés", "Barrières des labels"],
+                    reduce: ["Revenus faibles pour les artistes", "Marketing de masse générique"],
+                    increase: ["Accès direct artiste-fan", "Revenus équitables pour les artistes", "Personnalisation de l'écoute"],
+                    create: ["Plateformes de crowdfunding musical", "Expériences musicales immersives (VR/AR)", "Monétisation des contenus générés par les fans"]
+                }
+            }
+        };
+
+        let currentStep = 1;
+        const totalSteps = 13; // Including the final review step
+
+        const industrySelect = document.getElementById('industrySelect');
+        const redOceanFactorsTbody = document.getElementById('redOceanFactorsTbody');
+        const newStrategyFactorsTbody = document.getElementById('newStrategyFactorsTbody');
+
+        const drawRedOceanChartBtn = document.getElementById('drawRedOceanChartBtn');
+        const drawBlueOceanChartBtn = document.getElementById('drawBlueOceanChartBtn');
+        const simulationChart1Canvas = document.getElementById('simulationChart1');
+        const simulationChart2Canvas = document.getElementById('simulationChart2');
+
+        let simulationChart1 = null; // Chart for Red Ocean
+        let simulationChart2 = null; // Chart for Blue Ocean
+
+        const prevStepBtn = document.getElementById('prevStepBtn');
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const currentStepTitle = document.getElementById('currentStepTitle');
+        const finalReviewBtn = document.getElementById('finalReviewBtn'); // This button is for a final look, not for advancing steps
+        const resetSimulationBtn = document.getElementById('resetSimulationBtn');
+
+        const eliminateFactorsInput = document.getElementById('eliminateFactors');
+        const reduceFactorsInput = document.getElementById('reduceFactors');
+        const increaseFactorsInput = document.getElementById('increaseFactors');
+        const createFactorsInput = document.getElementById('createFactors');
+
+        const stepTitles = {
+            1: "Étape 1: Établir la Toile Stratégique de l'Océan Rouge 🔴",
+            2: "Étape 2: Appliquer le Cadre des Quatre Actions (CREE) 💡",
+            3: "Étape 3: Concevoir la Nouvelle Toile Stratégique 🔵",
+            4: "Étape 4: Évaluer l'Innovation de Valeur 💎",
+            5: "Étape 5: Tester la Séquence Stratégique : Utilité 🌟",
+            6: "Étape 6: Tester la Séquence Stratégique : Prix 💲",
+            7: "Étape 7: Tester la Séquence Stratégique : Coût 💸",
+            8: "Étape 8: Tester la Séquence Stratégique : Adoption 🤝",
+            9: "Étape 9: Surmonter les Obstacles Organisationnels : Perception 🧠",
+            10: "Étape 10: Surmonter les Obstacles Organisationnels : Ressources Limitées 💰",
+            11: "Étape 11: Surmonter les Obstacles Organisationnels : Motivation 💪",
+            12: "Étape 12: Surmonter les Obstacles Organisationnels : Politique 🏛️",
+            13: "Révision Finale de Votre Stratégie Océan Bleu 🎉"
+        };
+
+
+        // Initialize
+        loadIndustryFactors();
+        updateStepDisplay();
+
+        industrySelect.addEventListener('change', () => {
+            resetSimulation();
+            loadIndustryFactors();
+            currentStep = 1;
+            updateStepDisplay();
+        });
+
+        drawRedOceanChartBtn.addEventListener('click', drawRedOceanChart);
+        drawBlueOceanChartBtn.addEventListener('click', drawBlueOceanChart);
+        prevStepBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        });
+        nextStepBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepDisplay();
+            }
+        });
+        resetSimulationBtn.addEventListener('click', resetSimulation);
+
+
+        // Listen for changes in CREE textareas to update new strategy factors in Step 3
+        [eliminateFactorsInput, reduceFactorsInput, increaseFactorsInput, createFactorsInput].forEach(input => {
+            input.addEventListener('input', generateNewStrategyFactors);
+        });
+
+
+        function loadIndustryFactors() {
+            const selectedIndustry = industrySelect.value;
+            const factors = industryData[selectedIndustry].redOceanFactors;
+
+            redOceanFactorsTbody.innerHTML = '';
+            for (const factor in factors) {
+                const row = redOceanFactorsTbody.insertRow();
+                const cell1 = row.insertCell();
+                cell1.textContent = factor;
+                const cell2 = row.insertCell();
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'form-control form-control-sm';
+                input.min = 0;
+                input.max = 10;
+                input.value = factors[factor];
+                input.setAttribute('data-factor', factor); // Store factor name
+                cell2.appendChild(input);
+            }
+
+            // Load example CREE values for the selected industry
+            eliminateFactorsInput.value = industryData[selectedIndustry].blueOceanExample.eliminate.join(', ');
+            reduceFactorsInput.value = industryData[selectedIndustry].blueOceanExample.reduce.join(', ');
+            increaseFactorsInput.value = industryData[selectedIndustry].blueOceanExample.increase.join(', ');
+            createFactorsInput.value = industryData[selectedIndustry].blueOceanExample.create.join(', ');
+
+            // Clear charts and new strategy factors display
+            newStrategyFactorsTbody.innerHTML = '';
+            if (simulationChart1) simulationChart1.destroy();
+            simulationChart1Canvas.style.display = 'none';
+            if (simulationChart2) simulationChart2.destroy();
+            simulationChart2Canvas.style.display = 'none';
+        }
+
+        function drawRedOceanChart() {
+            if (simulationChart1) simulationChart1.destroy(); // Destroy previous chart
+
+            const labels = [];
+            const data = [];
+            redOceanFactorsTbody.querySelectorAll('input').forEach(input => {
+                labels.push(input.getAttribute('data-factor'));
+                data.push(parseInt(input.value));
+            });
+
+            simulationChart1Canvas.style.display = 'block';
+            simulationChart1 = new Chart(simulationChart1Canvas, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Océan Rouge Actuel',
+                        data: data,
+                        backgroundColor: 'rgba(220, 53, 69, 0.3)', /* red-ocean */
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(220, 53, 69, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(220, 53, 69, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    elements: {
+                        line: {
+                            tension: 0.2 // Smoothens the curve
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 2
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Toile Stratégique de l'Océan Rouge pour l'industrie du ${industryData[industrySelect.value].name}`,
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#343a40'
+                        },
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateNewStrategyFactors() {
+            const redOceanFactors = {};
+            redOceanFactorsTbody.querySelectorAll('input').forEach(input => {
+                redOceanFactors[input.getAttribute('data-factor')] = parseInt(input.value);
+            });
+
+            const eliminated = eliminateFactorsInput.value.split(',').map(f => f.trim()).filter(f => f !== '');
+            const reduced = reduceFactorsInput.value.split(',').map(f => f.trim()).filter(f => f !== '');
+            const increased = increaseFactorsInput.value.split(',').map(f => f.trim()).filter(f => f !== '');
+            const created = createFactorsInput.value.split(',').map(f => f.trim()).filter(f => f !== '');
+
+            const newFactors = {};
+
+            // Start with red ocean factors
+            for (const factor in redOceanFactors) {
+                newFactors[factor] = redOceanFactors[factor];
+            }
+
+            // Apply CREE rules
+            eliminated.forEach(f => {
+                if (newFactors.hasOwnProperty(f)) newFactors[f] = 0; // Eliminate by setting to 0
+            });
+            reduced.forEach(f => {
+                if (newFactors.hasOwnProperty(f)) newFactors[f] = Math.max(0, Math.floor(newFactors[f] * 0.2)); // Reduce to ~20%
+            });
+            increased.forEach(f => {
+                if (newFactors.hasOwnProperty(f)) newFactors[f] = Math.min(10, newFactors[f] + 4); // Increase by 4, max 10
+            });
+
+            // Add newly created factors, default to high value, ensure they are not existing factors (or significantly change existing ones)
+            created.forEach(f => {
+                if (!newFactors.hasOwnProperty(f) || newFactors[f] < 8) { // If truly new or not high, set to 10
+                    newFactors[f] = 10;
+                }
+            });
+
+            // Populate the new strategy table
+            newStrategyFactorsTbody.innerHTML = '';
+            for (const factor in newFactors) {
+                const row = newStrategyFactorsTbody.insertRow();
+                const cell1 = row.insertCell();
+                let label = factor;
+                if (eliminated.includes(factor)) label += " <span class='badge bg-danger'>Éliminé</span>";
+                else if (reduced.includes(factor)) label += " <span class='badge bg-warning text-dark'>Réduit</span>";
+                else if (increased.includes(factor)) label += " <span class='badge bg-success'>Accru</span>";
+                else if (created.includes(factor) && !redOceanFactors.hasOwnProperty(factor)) label += " <span class='badge bg-info'>Créé</span>";
+                else if (created.includes(factor)) label += " <span class='badge bg-info'>Créé/Renforcé</span>";
+                cell1.innerHTML = label;
+
+                const cell2 = row.insertCell();
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'form-control form-control-sm';
+                input.min = 0;
+                input.max = 10;
+                input.value = newFactors[factor];
+                input.setAttribute('data-factor', factor);
+                cell2.appendChild(input);
+            }
+        }
+
+
+        function drawBlueOceanChart() {
+            if (simulationChart2) simulationChart2.destroy();
+
+            const redOceanFactorsCurrent = {};
+            redOceanFactorsTbody.querySelectorAll('input').forEach(input => {
+                redOceanFactorsCurrent[input.getAttribute('data-factor')] = parseInt(input.value);
+            });
+
+            const newStrategyFactorsCurrent = {};
+            newStrategyFactorsTbody.querySelectorAll('input').forEach(input => {
+                const factorName = input.getAttribute('data-factor').split('(')[0].trim();
+                newStrategyFactorsCurrent[factorName] = parseInt(input.value);
+            });
+
+            // Collect all unique labels from both sets, ensuring consistent order
+            const allLabelsSet = new Set();
+            Object.keys(redOceanFactorsCurrent).forEach(label => allLabelsSet.add(label));
+            Object.keys(newStrategyFactorsCurrent).forEach(label => allLabelsSet.add(label));
+            const allLabels = Array.from(allLabelsSet).sort(); // Sort to ensure consistent chart labels
+
+            // Create aligned data arrays for comparison
+            const alignedRedOceanData = allLabels.map(label => redOceanFactorsCurrent[label] || 0);
+            const alignedNewStrategyData = allLabels.map(label => newStrategyFactorsCurrent[label] || 0);
+
+
+            simulationChart2Canvas.style.display = 'block';
+            simulationChart2 = new Chart(simulationChart2Canvas, {
+                type: 'radar',
+                data: {
+                    labels: allLabels,
+                    datasets: [
+                        {
+                            label: 'Océan Rouge Actuel',
+                            data: alignedRedOceanData,
+                            backgroundColor: 'rgba(220, 53, 69, 0.3)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(220, 53, 69, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(220, 53, 69, 1)'
+                        },
+                        {
+                            label: 'Votre Nouvelle Stratégie (Océan Bleu)',
+                            data: alignedNewStrategyData,
+                            backgroundColor: 'rgba(0, 123, 255, 0.3)', /* blue-ocean */
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    elements: {
+                        line: {
+                            tension: 0.2
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 2
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Comparaison des Toiles Stratégiques pour l'industrie du ${industryData[industrySelect.value].name}`,
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#343a40'
+                        },
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateStepDisplay() {
+            // Hide all steps
+            document.querySelectorAll('.simulation-step').forEach(step => {
+                step.classList.add('d-none');
+                step.classList.remove('animate__animated', 'animate__fadeInUp'); // Remove animations for hidden steps
+            });
+
+            // Show current step with animation
+            const currentStepElement = document.getElementById(`step${currentStep}`);
+            currentStepElement.classList.remove('d-none');
+            currentStepElement.classList.add('animate__animated', 'animate__fadeInUp');
+
+            currentStepTitle.innerHTML = stepTitles[currentStep]; // Use innerHTML for emojis
+
+            // Update navigation buttons
+            prevStepBtn.disabled = currentStep === 1;
+            nextStepBtn.disabled = currentStep === totalSteps;
+
+            // Specific actions for certain steps
+            if (currentStep === 1) {
+                simulationChart1Canvas.style.display = 'none';
+            } else if (currentStep === 3) {
+                generateNewStrategyFactors(); // Regenerate factors for Step 3 when entering it
+                simulationChart2Canvas.style.display = 'none';
+            } else {
+                if (simulationChart1) simulationChart1Canvas.style.display = 'none';
+                if (simulationChart2) simulationChart2Canvas.style.display = 'none';
+            }
+
+            // Ensure charts are reset on step change if they were previously drawn
+            if (currentStep !== 1 && simulationChart1) {
+                simulationChart1.destroy();
+                simulationChart1 = null;
+            }
+            if (currentStep !== 3 && simulationChart2) {
+                simulationChart2.destroy();
+                simulationChart2 = null;
+            }
+        }
+
+        function resetSimulation() {
+            industrySelect.value = 'cinema'; // Reset to default
+            loadIndustryFactors(); // Reload factors and clear fields
+            if (simulationChart1) simulationChart1.destroy();
+            simulationChart1Canvas.style.display = 'none';
+            if (simulationChart2) simulationChart2.destroy();
+            simulationChart2Canvas.style.display = 'none';
+            currentStep = 1;
+            updateStepDisplay();
+
+            // Reset all input fields in simulation steps
+            document.querySelectorAll('.simulation-step textarea, .simulation-step input[type="text"], .simulation-step input[type="number"]').forEach(input => {
+                if (input.id === 'eliminateFactors' || input.id === 'reduceFactors' || input.id === 'increaseFactors' || input.id === 'createFactors') {
+                    // These are reloaded by default example data when loadIndustryFactors is called, no need to clear to empty
+                } else {
+                    input.value = '';
+                }
+            });
+            document.querySelectorAll('.simulation-step input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            // Reset also the example inputs for CREE for the default industry
+            eliminateFactorsInput.value = industryData['cinema'].blueOceanExample.eliminate.join(', ');
+            reduceFactorsInput.value = industryData['cinema'].blueOceanExample.reduce.join(', ');
+            increaseFactorsInput.value = industryData['cinema'].blueOceanExample.increase.join(', ');
+            createFactorsInput.value = industryData['cinema'].blueOceanExample.create.join(', ');
+        }
+
+
+        // --- Quiz Logic ---
+        const quizQuestions = [
+            {
+                question: "Quel est le principal objectif de la Stratégie Océan Bleu ?",
+                options: [
+                    "Battre les concurrents existants en améliorant les produits.",
+                    "Créer un nouvel espace de marché où la concurrence est rendue obsolète.",
+                    "Réduire les coûts pour devenir le leader de prix.",
+                    "Augmenter la part de marché dans un secteur existant."
+                ],
+                answer: 1,
+                feedback: "Excellent ! L'essence de la Stratégie Océan Bleu est de sortir de la logique concurrentielle pour créer une nouvelle demande. C'est ce qu'a fait le Cirque du Soleil en ne se comparant plus aux cirques traditionnels mais en offrant une expérience unique."
+            },
+            {
+                question: "L'outil 'Cadre des Quatre Actions' consiste à :",
+                options: [
+                    "Analyser les forces et faiblesses, opportunités et menaces (SWOT).",
+                    "Éliminer, Réduire, Accroître, Créer (CREE).",
+                    "Planifier, Organiser, Diriger, Contrôler (PODC).",
+                    "Segmenter, Cibler, Positionner, Différencier (STPD)."
+                ],
+                answer: 1,
+                feedback: "Exactement ! Le cadre CREE est le cœur de l'innovation de valeur. Par exemple, Nintendo Wii a 'réduit' la puissance graphique (coûteuse) mais a 'créé' une nouvelle interaction de jeu par le mouvement, accessible à tous."
+            },
+            {
+                question: "Qu'est-ce que l'Innovation de Valeur dans le contexte de l'Océan Bleu ?",
+                options: [
+                    "Innover uniquement sur la technologie du produit.",
+                    "Offrir un bond de valeur exceptionnel tout en réduisant les coûts simultanément.",
+                    "Se concentrer uniquement sur la différenciation pour justifier des prix élevés.",
+                    "Copier les innovations réussies des concurrents."
+                ],
+                answer: 1,
+                feedback: "C'est la bonne réponse ! L'innovation de valeur brise le dilemme valeur-coût. Pensez à Southwest Airlines : ils ont accru la rapidité des rotations et le service amical tout en éliminant les extras (bagages, repas), réduisant ainsi les coûts et le prix."
+            },
+            {
+                question: "La 'Toile Stratégique' permet de :",
+                options: [
+                    "Calculer le retour sur investissement d'une nouvelle stratégie.",
+                    "Visualiser la performance relative des acteurs du marché sur les facteurs de concurrence.",
+                    "Déterminer la structure organisationnelle idéale.",
+                    "Prévoir les tendances futures du marché."
+                ],
+                answer: 1,
+                feedback: "Parfait ! La Toile Stratégique est un diagnostic visuel crucial. Elle vous permet de voir où vos concurrents investissent et où vous pouvez vous différencier. Une toile qui diverge fortement des autres indique un océan bleu potentiel."
+            },
+            {
+                question: "Parmi les éléments suivants, lequel n'est PAS un des quatre obstacles à la mise en œuvre de la stratégie Océan Bleu ?",
+                options: [
+                    "Obstacle cognitif (de perception).",
+                    "Obstacle financier.",
+                    "Obstacle de ressources.",
+                    "Obstacle politique."
+                ],
+                answer: 1,
+                feedback: "Bien vu ! L'obstacle financier n'est pas explicitement cité comme un des quatre obstacles (cognitif, ressources, motivation, politique) car la Stratégie Océan Bleu vise justement à libérer des ressources en réduisant les coûts pour financer l'innovation, plutôt que d'être freinée par un manque de fonds initial. M-Pesa, par exemple, a innové avec très peu de ressources bancaires, en s'appuyant sur l'infrastructure mobile existante."
+            },
+            {
+                question: "Quel concept vise à attirer les 'non-acheteurs' ?",
+                options: [
+                    "La segmentation de marché traditionnelle.",
+                    "L'analyse des clients existants.",
+                    "L'exploration des 'trois strates de non-acheteurs'.",
+                    "Le ciblage des niches de marché."
+                ],
+                answer: 2,
+                feedback: "Exact ! Les non-acheteurs représentent une demande latente énorme. En comprenant pourquoi ils n'utilisent pas votre industrie, vous pouvez découvrir des opportunités de création de valeur inexploitées. Uber ne ciblait pas seulement les utilisateurs de taxis, mais aussi ceux qui ne prenaient jamais de taxi à cause des contraintes (attente, prix)."
+            },
+            {
+                question: "La 'Séquence Stratégique' vérifie la viabilité d'une idée d'Océan Bleu en se basant sur :",
+                options: [
+                    "SWOT et PESTEL.",
+                    "Utilité, Prix, Coût, Adoption.",
+                    "Marketing, Ventes, Production, Finance.",
+                    "Vision, Mission, Valeurs, Objectifs."
+                ],
+                answer: 1,
+                feedback: "C'est la bonne réponse ! Cette séquence est cruciale pour s'assurer que votre idée n'est pas seulement innovante mais aussi commercialement viable. Une idée peut être géniale, mais si elle ne répond pas à ces quatre critères, son succès est limité."
+            },
+            {
+                question: "Quand une courbe de valeur est dite 'divergente' ?",
+                options: [
+                    "Quand elle se concentre sur un seul facteur.",
+                    "Quand elle est similaire à celles des concurrents.",
+                    "Quand elle se démarque significativement de celles des concurrents.",
+                    "Quand elle est difficile à reproduire."
+                ],
+                answer: 2,
+                feedback: "Oui ! La divergence est le signe d'un océan bleu. Votre offre ne ressemble pas à celle des autres; elle crée sa propre catégorie. Pensez à Netflix (initialement) qui a divergé des vidéo-clubs en offrant une flexibilité totale sans frais de retard."
+            },
+            {
+                question: "Quel est l'un des avantages majeurs de la Stratégie Océan Bleu ?",
+                options: [
+                    "Gagner des parts de marché aux dépens des concurrents.",
+                    "Accroître les marges par la réduction des coûts de production uniquement.",
+                    "Créer des marchés inexploités et rendre la concurrence non pertinente.",
+                    "Réduire les investissements en R&D."
+                ],
+                answer: 2,
+                feedback: "Absolument ! La création de nouveaux marchés est leSaint Graal de l'Océan Bleu. Au lieu de se battre pour une part du gâteau, vous créez votre propre gâteau, avec une demande que vous avez découverte ou générée."
+            },
+            {
+                question: "Le 'Leadership à point de bascule' (Tipping Point Leadership) aide à surmonter quel type d'obstacle ?",
+                options: [
+                    "Uniquement les obstacles financiers.",
+                    "Principalement les obstacles technologiques.",
+                    "Les obstacles organisationnels : cognitifs, ressources, motivation, politique.",
+                    "Les obstacles liés à la concurrence externe."
+                ],
+                answer: 2,
+                feedback: "Excellent ! Le leadership à point de bascule se concentre sur la gestion des résistances internes pour que le changement prenne de l'ampleur rapidement. Par exemple, en montrant les 'cold spots' (les zones sous-performantes) pour briser l'obstacle cognitif."
+            },
+            {
+                question: "Quel est l'objectif de la piste de recherche 'Regarder au-delà des produits et services complémentaires' ?",
+                options: [
+                    "Identifier les substituts directs à votre produit.",
+                    "Trouver ce qui se passe avant, pendant et après l'utilisation de votre produit pour créer de la valeur.",
+                    "Analyser les innovations technologiques de pointe.",
+                    "Examiner les offres des concurrents dans la même industrie."
+                ],
+                answer: 1,
+                feedback: "Très juste ! Cette piste vous incite à considérer l'expérience complète de l'acheteur. Par exemple, l'industrie du cinéma pourrait regarder les coûts de babysitting ou de parking comme des 'compléments' qui freinent l'expérience globale."
+            },
+            {
+                question: "Pourquoi est-il important d'impliquer les parties prenantes clés (employés, partenaires) dans le processus de création de l'Océan Bleu ?",
+                options: [
+                    "Pour répartir les coûts financiers de la nouvelle stratégie.",
+                    "Pour obtenir leur adhésion et surmonter la résistance au changement (Fair Process).",
+                    "Pour éviter d'avoir à faire des études de marché.",
+                    "Pour copier les meilleures pratiques de l'industrie."
+                ],
+                answer: 1,
+                feedback: "Exactement ! Le 'Fair Process' est essentiel. Quand les gens se sentent impliqués dans le processus et perçoivent la décision comme juste, ils sont plus susceptibles d'adhérer et de mettre en œuvre la stratégie avec enthousiasme, même s'ils n'étaient pas d'accord au départ."
+            },
+            {
+                question: "Une entreprise dans un 'Océan Rouge' se caractérise par :",
+                options: [
+                    "Une demande créée, non disputée.",
+                    "Une forte concurrence et des marges sous pression.",
+                    "Une innovation de valeur constante.",
+                    "Des barrières à l'entrée très élevées."
+                ],
+                answer: 1,
+                feedback: "Oui ! Les océans rouges sont des marchés où la concurrence est féroce, menant à une érosion des profits. C'est pourquoi la Stratégie Océan Bleu propose une sortie de ce paradigme."
+            },
+            {
+                question: "Quel type de non-acheteur est le plus facile à attirer vers un nouvel océan bleu ?",
+                options: [
+                    "Les non-acheteurs de première strate (ceux sur le point de devenir clients).",
+                    "Les non-acheteurs de deuxième strate (ceux qui ont délibérément choisi de ne pas acheter).",
+                    "Les non-acheteurs de troisième strate (ceux qui n'ont jamais été considérés comme des clients).",
+                    "Les clients des concurrents directs."
+                ],
+                answer: 0,
+                feedback: "Correct ! Les non-acheteurs de première strate sont les plus proches de votre marché actuel et peuvent être convertis plus facilement avec une proposition de valeur légèrement ajustée, mais l'objectif ultime est d'atteindre les deuxième et troisième strates pour une croissance massive."
+            },
+            {
+                question: "Le concept de 'message percutant' pour une toile stratégique signifie que :",
+                options: [
+                    "Elle est remplie de données complexes et détaillées.",
+                    "Elle peut être communiquée en quelques secondes par un slogan simple et clair.",
+                    "Elle utilise des termes techniques pour impressionner les experts.",
+                    "Elle nécessite une présentation de plusieurs heures pour être comprise."
+                ],
+                answer: 1,
+                feedback: "Précisément ! Un message percutant est court, facile à comprendre et à mémoriser. Il cristallise votre proposition de valeur unique et permet à tout le monde dans l'organisation de comprendre la direction stratégique. Pensez à 'Netflix : Regardez ce que vous voulez, quand vous voulez, sans frais de retard'."
+            },
+            {
+                question: "Pourquoi est-il important de 'reconstruire continuellement les frontières' ?",
+                options: [
+                    "Pour imiter les innovations des concurrents.",
+                    "Pour s'assurer que l'océan bleu reste inexploité indéfiniment.",
+                    "Pour anticiper les nouveaux océans rouges et en créer de nouveaux.",
+                    "Pour augmenter les prix une fois le marché établi."
+                ],
+                answer: 2,
+                feedback: "Oui ! Un océan bleu peut devenir rouge avec le temps à mesure que les concurrents imitent ou que de nouvelles technologies émergent. Il est vital d'adopter une mentalité de 'recherche perpétuelle d'océans bleus' pour maintenir l'avantage. C'est une démarche continue, pas un point d'arrivée."
+            },
+            {
+                question: "Quel rôle joue la 'simplification' dans la création d'un océan bleu ?",
+                options: [
+                    "Elle est un facteur de coût à éliminer.",
+                    "Elle peut créer de la valeur en rendant l'offre plus accessible aux non-acheteurs.",
+                    "Elle est sans importance dans la stratégie Océan Bleu.",
+                    "Elle est uniquement pertinente pour les produits technologiques."
+                ],
+                answer: 1,
+                feedback: "Absolument ! La simplification peut être un facteur clé de valeur pour les non-acheteurs. M-Pesa a simplifié les transferts d'argent pour des millions de personnes qui n'avaient pas accès aux banques traditionnelles, rendant le service accessible et facile à utiliser via un simple téléphone mobile."
+            },
+            {
+                question: "Quel est un des risques principaux de la Stratégie Océan Bleu ?",
+                options: [
+                    "Uniquement la forte concurrence des acteurs existants.",
+                    "La difficulté à surmonter les résistances internes et le risque lié à l'inconnu.",
+                    "L'impossibilité de générer des profits élevés.",
+                    "Le manque d'innovation technologique sur le marché."
+                ],
+                answer: 1,
+                feedback: "C'est exact. L'innovation implique toujours un risque, surtout lorsqu'on explore des territoires inconnus. La résistance interne est un défi majeur car la stratégie Océan Bleu remet en question le statu quo et les habitudes établies, nécessitant un fort leadership pour rallier les équipes."
+            },
+            {
+                question: "L'objectif d'une stratégie Océan Bleu est de :",
+                options: [
+                    "Faire correspondre l'offre à la demande existante.",
+                    "Créer de la demande en réveillant les besoins latents des non-acheteurs.",
+                    "Supprimer toutes les innovations technologiques.",
+                    "Proposer le prix le plus bas du marché."
+                ],
+                answer: 1,
+                feedback: "Très bien ! La création de demande est au cœur de l'Océan Bleu. Il ne s'agit pas de satisfaire une demande existante, mais de transformer les non-acheteurs en de nouveaux clients, en leur offrant une valeur qu'ils n'auraient jamais imaginée, comme Airbnb l'a fait pour l'hébergement."
+            },
+            {
+                question: "Quel est le dernier critère de la Séquence Stratégique ?",
+                options: [
+                    "L'Utilité.",
+                    "Le Prix.",
+                    "Le Coût.",
+                    "L'Adoption."
+                ],
+                answer: 3,
+                feedback: "Parfait ! L'adoption est la dernière mais non la moindre des vérifications. Une idée géniale qui n'est pas adoptée par les parties prenantes (employés, distributeurs, régulateurs) restera une idée. Le Fair Process est un outil clé pour gérer cet aspect."
+            }
+        ];
+
+        const quizContainer = document.getElementById('quizContainer');
+        const submitQuizBtn = document.getElementById('submitQuizBtn');
+        const retryQuizBtn = document.getElementById('retryQuizBtn');
+        const quizResultsDiv = document.getElementById('quizResults');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const summaryDisplay = document.getElementById('summaryDisplay');
+        const reviewAnswersBtn = document.getElementById('reviewAnswersBtn');
+
+        let userAnswers = []; // Stores user's selected option index for each question
+        let currentQuestionIndex = 0; // Tracks the current question for sequential display
+
+        function loadQuiz() {
+            quizContainer.innerHTML = '';
+            userAnswers = Array(quizQuestions.length).fill(null); // Initialize user answers with null
+            currentQuestionIndex = 0; // Start from the first question
+            quizResultsDiv.classList.add('d-none');
+            retryQuizBtn.classList.add('d-none');
+            submitQuizBtn.classList.remove('d-none');
+            submitQuizBtn.textContent = 'Valider la réponse et passer à la suivante';
+            reviewAnswersBtn.style.display = 'none'; // Hide review button
+
+            displayQuestion(currentQuestionIndex);
+        }
+
+        function displayQuestion(index) {
+            const q = quizQuestions[index];
+            quizContainer.innerHTML = `
+                <div class="quiz-question animate__animated animate__fadeInUp" id="question${index}">
+                    <h4>${index + 1}. ${q.question}</h4>
+                    <div class="options-container">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question${index}" id="q${index}option${optIndex}" value="${optIndex}">
+                                <label class="form-check-label" for="q${index}option${optIndex}">
+                                    ${option}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback mt-3 d-none" id="feedback${index}"></div>
+                </div>
+            `;
+
+            // Disable submit button until an option is selected
+            submitQuizBtn.disabled = true;
+            document.querySelectorAll(`input[name="question${index}"]`).forEach(radio => {
+                radio.addEventListener('change', () => {
+                    submitQuizBtn.disabled = false;
+                });
+            });
+        }
+
+
+        function submitCurrentQuestion() {
+            const selectedOption = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback${currentQuestionIndex}`);
+            feedbackDiv.classList.remove('d-none', 'correct', 'incorrect');
+
+            // Disable all radio buttons for the current question after submission
+            document.querySelectorAll(`input[name="question${currentQuestionIndex}"]`).forEach(radio => {
+                radio.disabled = true;
+            });
+
+            if (selectedOption) {
+                const userAnswer = parseInt(selectedOption.value);
+                userAnswers[currentQuestionIndex] = userAnswer; // Store the answer
+
+                const q = quizQuestions[currentQuestionIndex];
+                if (userAnswer === q.answer) {
+                    feedbackDiv.classList.add('correct');
+                    feedbackDiv.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i> Correct ! ${q.feedback}`;
+                } else {
+                    feedbackDiv.classList.add('incorrect');
+                    feedbackDiv.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i> Incorrect. La bonne réponse était : "${q.options[q.answer]}". ${q.feedback}`;
+                }
+            } else {
+                userAnswers[currentQuestionIndex] = null; // No answer
+                feedbackDiv.classList.add('incorrect');
+                feedbackDiv.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Vous n\'avez pas répondu à cette question.';
+            }
+
+            // Update button text for next action
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                submitQuizBtn.textContent = 'Question Suivante';
+                submitQuizBtn.removeEventListener('click', submitCurrentQuestion); // Remove current listener
+                submitQuizBtn.addEventListener('click', moveToNextQuestion); // Add new listener
+            } else {
+                submitQuizBtn.textContent = 'Voir mes résultats finaux';
+                submitQuizBtn.removeEventListener('click', submitCurrentQuestion);
+                submitQuizBtn.addEventListener('click', showFinalResults);
+            }
+        }
+
+        function moveToNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizQuestions.length) {
+                displayQuestion(currentQuestionIndex);
+                submitQuizBtn.textContent = 'Valider la réponse et passer à la suivante';
+                submitQuizBtn.removeEventListener('click', moveToNextQuestion);
+                submitQuizBtn.addEventListener('click', submitCurrentQuestion);
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            let score = 0;
+            quizQuestions.forEach((q, index) => {
+                if (userAnswers[index] !== null && userAnswers[index] === q.answer) {
+                    score++;
+                }
+            });
+
+            submitQuizBtn.classList.add('d-none');
+            retryQuizBtn.classList.remove('d-none');
+            quizResultsDiv.classList.remove('d-none');
+            reviewAnswersBtn.style.display = 'inline-block'; // Show review button
+
+            scoreDisplay.textContent = `${score} / ${quizQuestions.length}`;
+            let summaryText = "";
+            if (score === quizQuestions.length) {
+                summaryText = "Félicitations ! Vous maîtrisez la Stratégie Océan Bleu de A à Z ! Vous êtes un véritable pionnier.";
+                scoreDisplay.style.color = "var(--innovation)";
+            } else if (score >= quizQuestions.length * 0.75) {
+                summaryText = "Excellent travail ! Vous avez une très bonne compréhension des concepts clés. Il ne vous reste que quelques détails à affiner pour devenir un expert.";
+                scoreDisplay.style.color = "var(--blue-ocean)";
+            } else if (score >= quizQuestions.length * 0.5) {
+                 summaryText = "Bon travail ! Vous avez acquis les bases solides de la Stratégie Océan Bleu. Continuez à réviser les concepts pour renforcer votre expertise.";
+                 scoreDisplay.style.color = "orange";
+            }
+            else {
+                summaryText = "La Stratégie Océan Bleu est un domaine passionnant ! Continuez d'explorer les ressources et de pratiquer la simulation pour améliorer votre compréhension.";
+                scoreDisplay.style.color = "var(--red-ocean)";
+            }
+            summaryDisplay.textContent = summaryText;
+
+            // Scroll to quiz results
+            quizResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+
+        function reviewAnswers() {
+            // Hide quiz results, show all questions with feedback
+            quizResultsDiv.classList.add('d-none');
+            quizContainer.innerHTML = ''; // Clear container
+
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('quiz-question');
+                questionDiv.innerHTML = `
+                    <h4>${index + 1}. ${q.question}</h4>
+                    <div class="options-container">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question${index}" id="q${index}option${optIndex}" value="${optIndex}" ${userAnswers[index] === optIndex ? 'checked' : ''} disabled>
+                                <label class="form-check-label" for="q${index}option${optIndex}" ${optIndex === q.answer ? 'style="color: var(--innovation); font-weight: bold;"' : ''}>
+                                    ${option}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback mt-3 ${userAnswers[index] === q.answer ? 'correct' : 'incorrect'}">
+                        ${userAnswers[index] === q.answer ? '<i class="bi bi-check-circle-fill me-2"></i> Correct !' : `<i class="bi bi-x-circle-fill me-2"></i> Incorrect. La bonne réponse était : "${q.options[q.answer]}".`} ${q.feedback}
+                    </div>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+
+            // Hide submit/retry buttons for review mode, just keep review button (or hide it too)
+            submitQuizBtn.classList.add('d-none');
+            retryQuizBtn.classList.remove('d-none'); // Allow retrying after review
+            reviewAnswersBtn.style.display = 'none'; // Hide review button once clicked
+            // Scroll to the top of the quiz
+            quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+        // Initial load of the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuiz();
+            // Attach initial event listener for the first question
+            submitQuizBtn.addEventListener('click', submitCurrentQuestion);
+            retryQuizBtn.addEventListener('click', resetQuiz);
+            reviewAnswersBtn.addEventListener('click', reviewAnswers);
+        });
+    </script>
+</body>
+</html>
